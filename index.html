@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>DGMD E28 - Assignment 01 - Patrick Niebrzydowski</title>
+    <link href="https://fonts.googleapis.com/css?family=Oswald:700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Oswald:400" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="layout-twocol">
+        <div>
+          <h2>About Me</h2>
+          <table class="about-info">
+            <tbody>
+              <tr>
+                <th>Name:</th>
+                <td>Patrick Niebrzydowski</td>
+              </tr>
+              <tr>
+                <th>From:</th>
+                <td>Sterling Heights, MI (Metro Detroit)</td>
+              </tr>
+              <tr>
+                <th>Studying:</th>
+                <td>Graduate Certificate - Front End Web Development</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Development Background</h3>
+          <p>
+            After graduation from Michigan State University planning to work in creative advertising, I have been slowly
+            transitioning into the world of the Web since 2010. Starting off maintaining CMS assets and creating images
+            and animated banner ads, my career has progressed from visual & creative design, moving toward more
+            techincal development roles over the years. Currently, I am working as a React Frontend Developer for a
+            travel company called TourRadar in Vienna, Austria.
+          </p>
+        </div>
+
+        <div class="favorite-place">
+          <img src="./schloss-greinburg.jpg" alt="Greinburg Castle Courtyard - June 2021" />
+          <figcaption>
+            My favorite place&mdash;and wedding location, August 28, 2021&mdash;Greinburg Castle in Grein, Upper Austria
+          </figcaption>
+        </div>
+      </div>
+
+      <h3>Top Tip</h3>
+      <p>
+        Choosing a favorite restaurant is always impossible, there are so many good places out there. I have eaten so
+        many different foods all over the world, but it is hard not to come back to
+        <a href="https://www.facebook.com/louispizza" target="_blank" rel="noreferrer">Loui's Pizza</a>. People love to
+        tout Neapolitan, New York, Chicago, and many other types of pizza, but for me, Detroit-style square deep dish
+        will always be #1! Don't forget to order an antipasto salad on the side.
+      </p>
+
+      <h4>Want more tips?</h4>
+      <p>
+        Loui's is just the beginning. Looking for more amazing eats around the world? Subscribe to my newsletter using
+        the form below:
+      </p>
+
+      <form>
+        <div class="form-layout">
+          <div class="form-field">
+            <label for="subscribe-first-name"> First Name </label>
+            <input type="text" id="subscribe-first-name" name="firstName" placeholder="e.g., John" />
+          </div>
+          <div class="form-field">
+            <label for="subscribe-last-name"> Last Name </label>
+            <input type="text" id="subscribe-last-name" name="lastName" placeholder="e.g., Smith" />
+          </div>
+          <div class="form-field long-field">
+            <label for="subscribe-email"> Email Address </label>
+            <input type="text" id="subscribe-email" name="email" placeholder="e.g., johnsmith@example.com" />
+          </div>
+          <div class="form-field long-field">
+            <label for="subscribe-accept">
+              <input type="checkbox" id="subscribe-accept" name="accept" />
+              Yes, I would like to receive future emails from Patrick's Top Tips!
+            </label>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit">Sign me up!</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
