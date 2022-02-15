@@ -3,7 +3,7 @@ let gameBoardState;
 let $gameStateContainer;
 let $currentPlayerContainer;
 
-const printCurrentBoardState = () => {
+const logCurrentBoardState = () => {
   const logValues = [];
   gameBoardState.forEach(row => {
     const rowValues = [];
@@ -12,16 +12,13 @@ const printCurrentBoardState = () => {
     });
     logValues.push(` ${rowValues.join(' | ')} `);
   })
-  console.log("Current Board State");
+  console.log("Current Board State:");
   console.log(logValues.join('\n-----------\n'));
 }
 
 const updateCurrentPlayer = () => {
-  if (currentPlayer === 'x') {
-    currentPlayer = 'o';
-    return;
-  }
-  currentPlayer = 'x';
+  currentPlayer = currentPlayer === 'x' ? 'o' : 'x';
+  updateCurrentPlayerMsg();
 }
 
 const getSpaceValue = ($space) => $space.dataset.value;
@@ -55,8 +52,7 @@ const onSpaceClick = ($space) => {
 
   showNewGameState();
   updateCurrentPlayer();
-  updateCurrentPlayerMsg();
-  printCurrentBoardState();
+  logCurrentBoardState();
   checkForWin();
 };
 
