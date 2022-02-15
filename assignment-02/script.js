@@ -1,5 +1,7 @@
 let currentPlayer = 'x';
 let gameBoardState;
+let $gameStateContainer;
+let $currentPlayerContainer;
 
 const printCurrentBoardState = () => {
   const logValues = [];
@@ -27,19 +29,33 @@ const getSpaceValue = ($space) => $space.dataset.value;
 const checkForWin = () => {
   const winState = false;
   return winState;
-} 
+}
 
+const showNewGameError = (msg) => {
+  showNewGameState(msg, 'error');
+}
+
+const showNewGameState = (msg = '', className = '') => {
+  $gameStateContainer.className = className;
+  $gameStateContainer.innerHTML = msg;
+}
+const updateCurrentPlayerMsg = () =>
+  $currentPlayerContainer.innerHTML = `${currentPlayer}, it's your turn!`
 
 const onSpaceClick = ($space) => {
   const currentValue = getSpaceValue($space);
   if (currentValue !== ' ') {
-    console.log('Sorry this space is already taken, try another');
-    alert('Sorry this space is already taken, try another');
+    const msg = 'Sorry this space is already taken, try another';
+    
+    console.log(msg);
+    showNewGameError(msg);
     return;
   }
-  
   $space.dataset.value = currentPlayer;
+
+  showNewGameState();
   updateCurrentPlayer();
+  updateCurrentPlayerMsg();
   printCurrentBoardState();
   checkForWin();
 };
@@ -83,5 +99,7 @@ const buildInitialGameBoard = (gameBoardId) => {
 }
 
 document.body.onload = () => {
+  $gameStateContainer = document.getElementById('game-state');
+  $currentPlayerContainer = document.getElementById('current-player');
   gameBoardState = buildInitialGameBoard('game-board');
 };

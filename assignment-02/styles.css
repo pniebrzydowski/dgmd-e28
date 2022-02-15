@@ -10,6 +10,7 @@ body {
 body {
   margin: 0;
   position: relative;
+  text-align: center;
 }
 
 .game-board-wrapper {
@@ -17,6 +18,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+#game-state {
+  height: 32px;
+}
+#game-state.error {
+  color: #c00;
+}
+#game-state.success {
+  color: #060;
 }
 .game-row {
   padding: 0;
