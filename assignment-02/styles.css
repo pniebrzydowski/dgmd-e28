@@ -28,6 +28,17 @@ body {
 #game-state.success {
   color: #060;
 }
+#clear-board {
+  appearance: none;
+  background: #ddd;
+  border: 1px solid #666;
+  border-radius: 9px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+#clear-board:hover {
+  background: #ccc;
+}
 .game-row {
   padding: 0;
   margin: 0;
@@ -35,12 +46,14 @@ body {
 }
 .game-space {
   display: inline-block;
+  vertical-align: middle;
   padding: 0;
   margin: 0;
 }
 .game-space button {
   max-width: 124px;
   max-height: 124px;
+  font-size: 60px;
   height: calc(90vh / 3 - 4px);
   width: calc(90vw / 3 - 4px);
   border-radius: 0;

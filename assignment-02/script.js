@@ -31,6 +31,18 @@ const resetSpaceValue = ($space) => {
   $space.firstElementChild.innerHTML = '';
 }
 
+const showNewGameState = (msg = '', className = '') => {
+  $gameStateContainer.className = className;
+  $gameStateContainer.innerHTML = msg;
+}
+
+const showNewGameError = (msg) => {
+  showNewGameState(msg, 'error');
+}
+
+const updateCurrentPlayerMsg = () =>
+  $currentPlayerContainer.innerHTML = `${currentPlayer}, it's your turn!`
+
 /**
  * win states
  *
@@ -75,14 +87,7 @@ const checkForWin = () => {
   return winState;
 }
 
-const showNewGameError = (msg) => {
-  showNewGameState(msg, 'error');
-}
-
 const clearBoard = () => {
-  if (!confirm('The game is over, do you want to clear the board?')) {
-    return;
-  }
   winner = null;
   currentPlayer = 'x';
   fullSquares = 0;
@@ -94,17 +99,12 @@ const clearBoard = () => {
   };
 }
 
-const showNewGameState = (msg = '', className = '') => {
-  $gameStateContainer.className = className;
-  $gameStateContainer.innerHTML = msg;
-}
-const updateCurrentPlayerMsg = () =>
-  $currentPlayerContainer.innerHTML = `${currentPlayer}, it's your turn!`
-
 const onSpaceClick = ($space) => {
   if (isGameOver()) {
     console.log('game is over');
-    clearBoard();
+    if (confirm('The game is already over, do you want to start over?')) {
+      clearBoard();
+    }
     return;
   }
   console.log('click');
@@ -122,11 +122,10 @@ const onSpaceClick = ($space) => {
   logCurrentBoardState();
   showNewGameState();
   
-  const isWin = checkForWin();
   fullSquares++;
+  const isWin = checkForWin();
   
   if (isWin || isStalemate()) {
-    setTimeout(clearBoard, 0);
     return;
   }
 
@@ -171,8 +170,14 @@ const buildInitialGameBoard = (gameBoardId) => {
   return rows;
 }
 
+const initClearButton = () => {
+  document.getElementById('clear-board')
+    .addEventListener('click', clearBoard);
+}
+
 document.body.onload = () => {
   $gameStateContainer = document.getElementById('game-state');
   $currentPlayerContainer = document.getElementById('current-player');
+  initClearButton('clear-board');
   gameBoardState = buildInitialGameBoard('game-board');
 };
