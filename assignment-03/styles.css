@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+}
+
+.hidden {
+  display: none;
+}
+
+.order-form-wrapper {
+  max-width: 320px;
+}
+
+.order-quantities {
+  border-collapse: collapse;
+  text-align: left;
+  width: 100%;
+}
+
+.order-quantities td {
+  padding: 0.5rem 0.5rem 0.5rem 0;
+}
+.order-quantities td:last-of-type {
+  padding-right: 0;
+}
+
+.order-quantities input {
+  width: 100%;
+  padding: 0.25rem;
+}
+
+.form-btn {
+  cursor: pointer;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+}
+
+#order-summary {
+  text-transform: capitalize;
+}
