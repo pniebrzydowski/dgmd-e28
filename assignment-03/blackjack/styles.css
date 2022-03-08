@@ -1,0 +1,88 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+.game-wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.status-bar {
+  padding: 8px 16px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.money-bar {
+  background: #060;
+  color: #fff;
+}
+
+.score {
+  display: flex;
+}
+
+.score > div + div {
+  margin-left: 16px;
+}
+
+.game-area {
+  flex-grow: 1;
+}
+
+.blackjack-table {
+  padding: 16px;
+  height: 100%;
+  max-width: 100%;
+  width: 600px;
+  border-radius: 25px;
+  margin: 32px auto;
+  background: #030;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hand {
+  display: flex;
+}
+
+.card {
+  height: 140px;
+  width: 100px;
+  background: #eee;
+  border: 1px solid #000;
+  border-radius: 7px;
+  margin-top: 16px;
+  background-image: url("./bicycle.jpeg");
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card + .card {
+  margin-left: 16px;
+}
+
+.game-button {
+  cursor: pointer;
+  margin: 0;
+  padding: 8px 16px;
+}
+
+.game-button + .game-button {
+  margin-left: 8px;
+}

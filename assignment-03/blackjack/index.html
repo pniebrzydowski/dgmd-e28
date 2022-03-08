@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>DGMD E28 - Assignment 03 - Blackjack - Patrick Niebrzydowski</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    <div class="game-wrapper">
+      <h1>Welcome to Patrick's Casino</h1>
+      <div class="status-bar money-bar">
+        <div class="player-wallet">Cash: $<span id="player-cash">100.00</span></div>
+        <div class="player-bet">
+          <form id="player-bet-form">
+            Bet: $<input id="current-bet" type="number" step="0.25" min="0.25" max="5" value="0.25" />
+            <button type="button" id="player-start">Deal!</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="game-area">
+        <div class="blackjack-table">
+          <div>
+            Dealer's Hand:
+            <div class="hand dealer-hand">
+              <div class="card" id="dealer-card-one"></div>
+              <div class="card" id="dealer-card-two"></div>
+            </div>
+          </div>
+          <div>
+            Your Hand:
+            <div class="hand player-hand">
+              <div class="card" id="player-card-one"></div>
+              <div class="card" id="player-card-two"></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <button class="game-button" id="game-button-hit" disabled>Hit Me</button>
+          <button class="game-button" id="game-button-stay" disabled>Stay</button>
+        </div>
+      </div>
+
+      <div class="status-bar game-bar">
+        <div class="score">
+          <div>Dealer: <span id="dealer-score">0</span></div>
+          <div>You: <span id="player-score">0</span></div>
+        </div>
+        <p id="game-status"></p>
+      </div>
+    </div>
+    <script type="text/javascript" src="./script.js"></script>
+  </body>
+</html>
