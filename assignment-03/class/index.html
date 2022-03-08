@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>DGMD E28 - Assignment 03 - Patrick Niebrzydowski</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    <h1>Joe's Hot Dogs</h1>
+    <div class="order-form-wrapper">
+      <h2>Place your Order:</h2>
+      <form id="order-form">
+        <table class="order-quantities">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Cost</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hot Dog</td>
+              <td>$4.00</td>
+              <td><input type="number" min="0" value="0" name="hotdog" /></td>
+            </tr>
+            <tr>
+              <td>Fries</td>
+              <td>$3.50</td>
+              <td><input type="number" min="0" value="0" name="fries" /></td>
+            </tr>
+            <tr>
+              <td>Soda</td>
+              <td>$1.50</td>
+              <td><input type="number" min="0" value="0" name="soda" /></td>
+            </tr>
+            <tr>
+              <td>Sauerkraut</td>
+              <td>$1.00</td>
+              <td><input type="number" min="0" value="0" name="sauerkraut" /></td>
+            </tr>
+            </tr>
+          </tbody>
+        </table>
+        <button type="submit" class="calculate-btn form-btn">Calculate Total</button>
+        <button type="button" id="reset-btn" class="form-btn">Reset Order</button>
+      </form>
+    </div>
+    
+    <div id="order-review" class="hidden">
+      <h2>Order Summary:</h2>
+      <p id="order-summary"></p>
+      <h3>Total Price: <span id="total-price"></span></h3>
+    </div>
+
+    <script type="text/javascript" src="./script.js"></script>
+  </body>
+</html>
