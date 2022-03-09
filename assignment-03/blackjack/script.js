@@ -51,30 +51,37 @@ class Card {
 }
 
 class Hand {
-  constructor($container) {
+  constructor($container, hideFirst) {
     this.$container = $container;
     this.cards = [];
-    this.dealNewCard();
-    this.dealNewCard();
     $container.innerHTML = "";
   }
 
-  appendCardToDOM(newCard) {
+  appendCardToDOM(newCard, hidden) {
     const $newCardDiv = document.createElement("div");
     $newCardDiv.classList.add("card");
     $newCardDiv.classList.add(newCard.color);
+    if (hidden) {
+      $newCardDiv.classList.add("placeholder");
+    }
     $newCardDiv.innerHTML = newCard.display;
-    setTimeout(() => {
-      this.$container.appendChild($newCardDiv);
-    }, 0);
+    this.$container.appendChild($newCardDiv);
   }
 
-  dealNewCard() {
+  async deal(hideFirst) {
+    await this.dealNewCard(hideFirst ? true : false);
+    await this.dealNewCard();
+  }
+
+  dealNewCard(hidden) {
     const cardValue = Math.ceil(Math.random() * 13);
     const suitValue = Math.floor(Math.random() * 4);
     const newCard = new Card(cardValue, suitValue);
     this.cards.push(newCard);
-    this.appendCardToDOM(newCard);
+    return new Promise((resolve) => {
+      this.appendCardToDOM(newCard, hidden);
+      resolve();
+    });
   }
 
   isSoft(cards = this.cards) {
@@ -86,7 +93,7 @@ class Hand {
   }
 
   getFinalScore(score = this.getScore()) {
-    if (this.isSoft()) {
+    if (this.isSoft(this.cards)) {
       score += 10;
     }
     return score;
@@ -98,27 +105,34 @@ class Hand {
 }
 
 class DealerHand extends Hand {
-  getVisibleHand() {
-    return this.cards.slice(1);
+  async deal() {
+    await super.deal(true);
+    this.visibleHand = this.cards.slice(1);
   }
 
-  isSoft() {
-    return super.isSoft(this.getVisibleHand());
+  showFirstCard() {
+    const $cards = this.$container.querySelectorAll(".card");
+    $cards[0].classList.remove("placeholder");
+    this.visibleHand = this.cards;
   }
 
-  getScore() {
-    return super.getScore(this.getVisibleHand());
+  isSoft(cards = this.visibleHand) {
+    return super.isSoft(cards);
+  }
+
+  getScore(cards = this.visibleHand) {
+    return super.getScore(cards);
   }
 
   getFinalScore() {
-    return super.getFinalScore(super.getScore());
+    return super.getFinalScore(this.getScore(this.cards));
   }
 }
 
 class BlackjackGame {
   constructor() {
     this.cashBalance = 10000;
-    this.currentBet = 25;
+    this.currentBet = 50;
     this.$cashDisplay = document.getElementById("player-cash");
     this.$betForm = document.getElementById("player-bet-form");
     this.$hitButton = document.getElementById("game-button-hit");
@@ -130,14 +144,16 @@ class BlackjackGame {
   }
 
   enableBetForm() {
-    this.$betForm.querySelectorAll("input, button", () => {
-      ($el) => ($el.disabled = false);
-    });
+    const $inputEl = this.$betForm.querySelector("input");
+    $inputEl.disabled = false;
+    const $btnEl = this.$betForm.querySelector("button");
+    $btnEl.disabled = false;
   }
   disableBetForm() {
-    this.$betForm.querySelectorAll("input, button", () => {
-      ($el) => ($el.disabled = true);
-    });
+    const $inputEl = this.$betForm.querySelector("input");
+    $inputEl.disabled = true;
+    const $btnEl = this.$betForm.querySelector("button");
+    $btnEl.disabled = true;
   }
 
   enableGameButtons() {
@@ -149,14 +165,16 @@ class BlackjackGame {
     this.$stayButton.disabled = true;
   }
 
-  dealDealerCards() {
+  async dealDealerCards() {
     const $dealerHand = document.getElementById("dealer-hand");
     this.dealerHand = new DealerHand($dealerHand);
+    await this.dealerHand.deal();
   }
 
-  dealPlayerCards() {
+  async dealPlayerCards() {
     const $playerHand = document.getElementById("player-hand");
     this.playerHand = new Hand($playerHand);
+    await this.playerHand.deal();
   }
 
   updateCashBalanceDisplay() {
@@ -169,14 +187,17 @@ class BlackjackGame {
       this.$dealerScore.innerHTML = this.dealerHand.getFinalScore();
       this.$playerScore.innerHTML = this.playerHand.getFinalScore();
     } else {
-      this.$dealerScore.innerHTML = `${this.dealerHand.getScore()}${this.dealerHand.isSoft() ? " (Soft)" : ""}`;
-      this.$playerScore.innerHTML = `${this.playerHand.getScore()}${this.playerHand.isSoft() ? " (Soft)" : ""}`;
+      const dealerScore = this.dealerHand.getScore();
+      this.$dealerScore.innerHTML = this.dealerHand.isSoft() ? `${dealerScore + 10} (Soft)` : dealerScore;
+      const playerScore = this.playerHand.getScore();
+      this.$playerScore.innerHTML = this.playerHand.isSoft() ? `${playerScore + 10} (Soft)` : playerScore;
     }
   }
 
   endHand(playerWinnings, statusMsg) {
     this.disableGameButtons();
-    // this.showDealerHand();
+    this.dealerHand.showFirstCard();
+    this.updateScoreDisplay(true);
     this.setGameStatus(statusMsg);
     this.cashBalance += playerWinnings;
     this.updateCashBalanceDisplay();
@@ -193,7 +214,7 @@ class BlackjackGame {
   }
 
   declareWin(isBlackjack) {
-    const msg = "Congratulations, you won!";
+    const msg = isBlackjack ? "Blackjack!" : "Congratulations, you won!";
     const winnings = isBlackjack ? this.currentBet * 1.5 : this.currentBet;
     this.endHand(winnings, msg);
   }
@@ -226,19 +247,25 @@ class BlackjackGame {
     }
   }
 
-  startHand() {
+  async startHand() {
     this.disableBetForm();
     this.setGameStatus("");
-    this.dealDealerCards();
-    this.dealPlayerCards();
+    await this.dealDealerCards();
+    await this.dealPlayerCards();
+
     const isDealerBlackjack = this.dealerHand.getFinalScore() === 21;
     const isPlayerBlackjack = this.playerHand.getFinalScore() === 21;
+
     if (isDealerBlackjack && isPlayerBlackjack) {
       this.declarePush();
       return;
     }
     if (isPlayerBlackjack) {
       this.declareWin(true);
+      return;
+    }
+    if (isDealerBlackjack) {
+      this.declareDealerWin();
       return;
     }
     this.enableGameButtons();
@@ -255,9 +282,15 @@ class BlackjackGame {
       e.preventDefault();
       this.submitBet();
     });
+
+    this.$betForm.querySelector("input").addEventListener("change", (e) => {
+      this.currentBet = parseFloat(e.target.value) * 100;
+    });
   }
 
   dealerTurn() {
+    this.dealerHand.showFirstCard();
+
     while (this.dealerHand.getFinalScore() < 17) {
       this.dealerHand.dealNewCard();
       this.updateScoreDisplay(true);
@@ -270,8 +303,8 @@ class BlackjackGame {
   }
 
   initGameButtons() {
-    this.$hitButton.addEventListener("click", () => {
-      this.playerHand.dealNewCard();
+    this.$hitButton.addEventListener("click", async () => {
+      await this.playerHand.dealNewCard();
       this.updateScoreDisplay();
       if (this.playerHand.checkForBust()) {
         this.declareBust();

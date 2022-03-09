@@ -75,10 +75,14 @@ body {
   color: #c00;
 }
 .card.placeholder {
+  color: transparent;
   background-image: url("./bicycle.jpeg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 85%;
+}
+.card.card.placeholder img {
+  display: none;
 }
 
 .card + .card {
