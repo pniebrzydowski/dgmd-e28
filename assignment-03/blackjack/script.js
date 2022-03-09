@@ -80,6 +80,12 @@ class Hand {
   getScore(cards = this.cards) {
     return cards.reduce((prev, curr) => prev + curr.blackjackValue, 0);
   }
+
+  getFinalScore = this.getScore;
+
+  checkForBust() {
+    return this.getFinalScore() > 21;
+  }
 }
 
 class DealerHand extends Hand {
@@ -178,6 +184,11 @@ class BlackjackGame {
     this.endHand(-this.currentBet, msg);
   }
 
+  declareDealerBust() {
+    const msg = "Congratulations you won! (Dealer Bust)";
+    this.endHand(this.currentBet, msg);
+  }
+
   checkWinner() {
     const dealerScore = this.dealerHand.getFinalScore();
     const playerScore = this.playerHand.getScore();
@@ -220,13 +231,28 @@ class BlackjackGame {
     });
   }
 
+  dealerTurn() {
+    while (this.dealerHand.getFinalScore() < 17) {
+      this.dealerHand.dealNewCard();
+      this.updateScoreDisplay();
+    }
+    if (this.dealerHand.checkForBust()) {
+      this.declareDealerBust();
+      return;
+    }
+    this.checkWinner();
+  }
+
   initGameButtons() {
     this.$hitButton.addEventListener("click", () => {
-      console.log("hit");
+      this.playerHand.dealNewCard();
+      this.updateScoreDisplay();
+      if (this.playerHand.checkForBust()) {
+        this.declareBust();
+      }
     });
     this.$stayButton.addEventListener("click", () => {
-      console.log("stay");
-      this.checkWinner();
+      this.dealerTurn();
     });
   }
 
