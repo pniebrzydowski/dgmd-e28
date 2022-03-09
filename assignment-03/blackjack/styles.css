@@ -47,23 +47,21 @@ body {
   padding: 16px;
   height: 100%;
   max-width: 100%;
-  width: 600px;
+  width: 500px;
   border-radius: 25px;
   margin: 32px auto;
   background: #030;
   color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .hand {
+  width: 100%;
   display: flex;
 }
 
 .card {
-  height: 140px;
-  width: 100px;
+  height: 100px;
+  width: 72px;
   background: #eee;
   color: #000;
   border: 1px solid #000;
@@ -80,6 +78,7 @@ body {
   background-image: url("./bicycle.jpeg");
   background-position: center;
   background-repeat: no-repeat;
+  background-size: 85%;
 }
 
 .card + .card {
