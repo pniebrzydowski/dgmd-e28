@@ -15,8 +15,16 @@ class Card {
   constructor(cardValue, suitValue) {
     this.cardValue = cardValue;
     this.suit = suitValue;
+    this.color = this.getColor();
     this.blackjackValue = this.getBlackjackValue();
     this.display = this.getDisplay();
+  }
+
+  getColor() {
+    if (this.suit === 0 || this.suit === 2) {
+      return "red";
+    }
+    return "black";
   }
 
   getBlackjackValue() {
@@ -54,8 +62,11 @@ class Hand {
   appendCardToDOM(newCard) {
     const $newCardDiv = document.createElement("div");
     $newCardDiv.classList.add("card");
+    $newCardDiv.classList.add(newCard.color);
     $newCardDiv.innerHTML = newCard.display;
-    this.$container.appendChild($newCardDiv);
+    setTimeout(() => {
+      this.$container.appendChild($newCardDiv);
+    }, 0);
   }
 
   dealNewCard() {
@@ -66,9 +77,17 @@ class Hand {
     this.appendCardToDOM(newCard);
   }
 
-  getScore() {
-    this.cards.reduce((prev, curr) => prev.blackjackValue + curr.blackjackValue, 0);
+  getScore(cards = this.cards) {
+    return cards.reduce((prev, curr) => prev + curr.blackjackValue, 0);
   }
+}
+
+class DealerHand extends Hand {
+  getScore() {
+    const [firstCard, ...visibleHand] = this.cards;
+    return super.getScore(visibleHand);
+  }
+  getFinalScore = () => super.getScore();
 }
 
 class BlackjackGame {
@@ -79,6 +98,8 @@ class BlackjackGame {
     this.$betForm = document.getElementById("player-bet-form");
     this.$hitButton = document.getElementById("game-button-hit");
     this.$stayButton = document.getElementById("game-button-stay");
+    this.$dealerScore = document.getElementById("dealer-score");
+    this.$playerScore = document.getElementById("player-score");
     this.initActions();
   }
 
@@ -104,7 +125,7 @@ class BlackjackGame {
 
   dealDealerCards() {
     const $dealerHand = document.getElementById("dealer-hand");
-    this.dealerHand = new Hand($dealerHand);
+    this.dealerHand = new DealerHand($dealerHand);
   }
 
   dealPlayerCards() {
@@ -117,9 +138,15 @@ class BlackjackGame {
     this.$cashDisplay.innerHTML = convertedBalance;
   }
 
+  updateScoreDisplay() {
+    console.log(this.dealerHand, this.playerHand);
+    this.$dealerScore.innerHTML = this.dealerHand.getScore();
+    this.$playerScore.innerHTML = this.playerHand.getScore();
+  }
+
   endHand(playerWinnings, statusMsg) {
     this.disableGameButtons();
-    this.showDealerHand();
+    // this.showDealerHand();
     this.setGameStatus(statusMsg);
     this.cashBalance += playerWinnings;
     this.updateCashBalanceDisplay();
@@ -135,9 +162,10 @@ class BlackjackGame {
     this.endHand(0, msg);
   }
 
-  declareWin() {
+  declareWin(isBlackjack) {
     const msg = "Congratulations, you won!";
-    this.endHand(this.currentBet, msg);
+    const winnings = isBlackjack ? this.currentBet * 1.5 : this.currentBet;
+    this.endHand(winnings, msg);
   }
 
   declareDealerWin() {
@@ -150,6 +178,19 @@ class BlackjackGame {
     this.endHand(-this.currentBet, msg);
   }
 
+  checkWinner() {
+    const dealerScore = this.dealerHand.getFinalScore();
+    const playerScore = this.playerHand.getScore();
+    console.log(playerScore, dealerScore);
+    if (playerScore > dealerScore) {
+      this.declareWin();
+    } else if (dealerScore > playerScore) {
+      this.declareDealerWin();
+    } else {
+      this.declarePush();
+    }
+  }
+
   startHand() {
     this.dealDealerCards();
     this.dealPlayerCards();
@@ -160,10 +201,11 @@ class BlackjackGame {
       return;
     }
     if (isPlayerBlackjack) {
-      this.declareWin();
+      this.declareWin(true);
       return;
     }
     this.enableGameButtons();
+    this.updateScoreDisplay();
   }
 
   submitBet() {
@@ -180,14 +222,11 @@ class BlackjackGame {
 
   initGameButtons() {
     this.$hitButton.addEventListener("click", () => {
-      if (this.dealerScore === 0) {
-        return;
-      }
+      console.log("hit");
     });
     this.$stayButton.addEventListener("click", () => {
-      if (this.dealerScore === 0) {
-        return;
-      }
+      console.log("stay");
+      this.checkWinner();
     });
   }
 
