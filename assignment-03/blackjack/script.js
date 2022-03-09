@@ -1,9 +1,9 @@
 class Card {
   SUITS = {
-    0: "H",
-    1: "S",
-    2: "D",
-    3: "C",
+    0: '<img class="suit" src="./heart.svg" />',
+    1: '<img class="suit" src="./spade.svg" />',
+    2: '<img class="suit" src="./diamond.svg" />',
+    3: '<img class="suit" src="./clubs.svg" />',
   };
   FACE_CARDS = {
     1: "A",

@@ -85,6 +85,10 @@ body {
   margin-left: 16px;
 }
 
+.suit {
+  width: 16px;
+}
+
 .game-button {
   cursor: pointer;
   margin: 0;
