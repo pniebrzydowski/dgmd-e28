@@ -1,0 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+
+.row {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.letter {
+  border: 1px solid #000;
+  border-radius: 9px;
+  background: #eee;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.letter + .letter {
+  margin-left: 8px;
+}
