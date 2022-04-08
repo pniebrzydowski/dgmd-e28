@@ -6,6 +6,7 @@
   list-style: none;
   display: flex;
   margin: 0;
+  margin-top: 8px;
   padding: 0;
 }
 
@@ -22,4 +23,11 @@
 
 .letter + .letter {
   margin-left: 8px;
+}
+
+.letter.letter-correct {
+  background: rgb(210, 255, 210);
+}
+.letter.letter-inword {
+  background: rgb(255, 255, 110);
 }
