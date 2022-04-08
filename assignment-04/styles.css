@@ -2,6 +2,15 @@
   box-sizing: border-box;
 }
 
+.game-wrapper {
+  text-align: center;
+}
+
+#game-board {
+  margin: 0 auto;
+  max-width: 584px;
+}
+
 .row, #letters-guessed {
   list-style: none;
   display: flex;
@@ -29,15 +38,43 @@
   border: 1px solid #000;
   border-radius: 9px;
   background: #eee;
-  height: 32px;
-  width: 32px;
+  width: calc(100% / 5 - 8px);
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  /* trick to make it square */
+  padding-bottom: calc((100% / 5 - 8px) / 2);
+  padding-top: calc((100% / 5 - 8px) / 2);
+  height: 0;
 }
 
 .letter + .letter {
   margin-left: 8px;
+}
+
+@media screen and (min-width: 360px) {
+  .letter {
+    font-size: 22px;
+  }
+}
+
+@media screen and (min-width: 420px) {
+  .letter {
+    font-size: 28px;
+  }
+}
+
+@media screen and (min-width: 500px) {
+  .letter {
+    font-size: 36px;
+  }
+  .letter + .letter {
+    margin-left: 16px;
+  }
+  .row {
+    margin-top: 16px;
+  }  
 }
 
 .letter.letter-correct {
