@@ -95,10 +95,7 @@ class Game {
   constructor(wordApi) {
     this.wordApi = wordApi;
     this.$gameBoard = document.getElementById("game-board");
-    this.guesses = [1, 2, 3, 4, 5, 6].map((idx) => new Guess(idx));
-    this.guessIndex = 0;
-    this.currentGuess = this.guesses[0];
-    this.guessedLetters = [];
+    this.initGame();
     this.startGame();
   }
 
@@ -121,6 +118,7 @@ class Game {
   }
 
   createEmptyBoard() {
+    this.$gameBoard.innerHTML = "";
     this.guesses.forEach((guess) => {
       const $el = guess.generateElement();
       this.$gameBoard.appendChild($el);
@@ -130,6 +128,20 @@ class Game {
   goToNextGuess() {
     this.guessIndex++;
     this.currentGuess = this.guesses[this.guessIndex];
+  }
+
+  initGame() {
+    this.guesses = [1, 2, 3, 4, 5, 6].map((idx) => new Guess(idx));
+    this.guessIndex = 0;
+    this.currentGuess = this.guesses[0];
+    this.guessedLetters = [];
+  }
+
+  endGame(msg) {
+    if (confirm(`${msg}. Would you like to play again?`)) {
+      this.initGame();
+      this.restartGame();
+    }
   }
 
   initKeyboard() {
@@ -147,13 +159,14 @@ class Game {
 
         const isCorrect = this.currentGuess.evaluate(correctWord);
         if (isCorrect) {
-          alert("Congratulations, you guessed the word correctly!");
+          this.endGame("Congratulations, you guessed the word correctly!");
           return;
         }
-        if (this.guessIndex === 5) {
-          alert(`Sorry, the word was: ${correctWord}`);
-        }
         this.updateGuessedLetters(this.currentGuess.letters);
+        if (this.guessIndex === 5) {
+          this.endGame(`Sorry, the word was: ${correctWord}`);
+          return;
+        }
         this.goToNextGuess();
         return;
       }
@@ -175,10 +188,17 @@ class Game {
     });
   }
 
-  async startGame() {
+  restartGame() {
+    this.startGame(true);
+  }
+
+  async startGame(isRestart = false) {
     this.word = await this.wordApi.getRandomWord();
-    this.initKeyboard();
     this.createEmptyBoard();
+    if (isRestart) {
+      return;
+    }
+    this.initKeyboard();
   }
 }
 
@@ -196,7 +216,6 @@ class WordAPI {
   }
 
   isValidWord(word) {
-    console.log(word);
     if (word.length !== 5) {
       return "Sorry, you must enter a five letter word";
     }
