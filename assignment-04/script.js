@@ -23,9 +23,7 @@ class Letter {
   }
   evaluate(wordGuess) {
     const lettersGuessed = wordGuess.split("");
-    console.log(lettersGuessed, this.letter);
     if (lettersGuessed.includes(this.letter)) {
-      console.log(lettersGuessed[this.index], this.letter);
       if (lettersGuessed[this.index] === this.letter) {
         this.isCorrect = true;
       } else {
@@ -87,9 +85,7 @@ class Guess {
   }
 
   removeLastLetter() {
-    console.log(this.letters);
-    const length = this.letters.length;
-    this.letters.splice(length, 1);
+    this.letters[this.letterCount - 1] = new Letter();
     this.letterCount--;
     this.updateRow();
   }
