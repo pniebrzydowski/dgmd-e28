@@ -61,19 +61,16 @@ class Guess {
   }
 
   getGuessWord() {
-    return this.letters.reduce((word, letter) => (word += letter));
+    return this.letters.reduce((word, letter) => (word += letter.letter), "");
   }
 
   evaluate(correctWord) {
-    if (this.getGuessWord() === correctWord) {
-      return true;
-    }
-
     this.letters.forEach((letter) => {
       letter.evaluate(correctWord);
     });
     this.updateRow();
-    return false;
+
+    return this.getGuessWord() === correctWord;
   }
 
   isFull() {
@@ -135,13 +132,17 @@ class Game {
     document.body.addEventListener("keyup", (e) => {
       const key = e.key;
       const fullGuess = this.currentGuess.isFull();
+      const correctWord = this.word.get();
 
       if (key === "Enter") {
         if (fullGuess) {
-          const isCorrect = this.currentGuess.evaluate(this.word.get());
+          const isCorrect = this.currentGuess.evaluate(correctWord);
           if (isCorrect) {
             alert("Congratulations, you guessed the word correctly!");
             return;
+          }
+          if (this.guessIndex === 5) {
+            alert(`Sorry, the word was: ${correctWord}`);
           }
           this.goToNextGuess();
           return;
