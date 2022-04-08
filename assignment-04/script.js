@@ -98,7 +98,26 @@ class Game {
     this.guesses = [1, 2, 3, 4, 5, 6].map((idx) => new Guess(idx));
     this.guessIndex = 0;
     this.currentGuess = this.guesses[0];
+    this.guessedLetters = [];
     this.startGame();
+  }
+
+  updateGuessedLetters(newLetters) {
+    if (!this.$guessedLettersContainer) {
+      const $guessedDiv = document.createElement("ul");
+      $guessedDiv.id = "letters-guessed";
+      this.$gameBoard.appendChild($guessedDiv);
+      this.$guessedLettersContainer = $guessedDiv;
+    }
+
+    newLetters.forEach((letter) => {
+      if (this.guessedLetters.includes(letter.letter)) {
+        return;
+      }
+      this.guessedLetters.push(letter.letter);
+      const $newLetterEl = letter.generateElement();
+      this.$guessedLettersContainer.appendChild($newLetterEl);
+    });
   }
 
   createEmptyBoard() {
@@ -134,6 +153,7 @@ class Game {
         if (this.guessIndex === 5) {
           alert(`Sorry, the word was: ${correctWord}`);
         }
+        this.updateGuessedLetters(this.currentGuess.letters);
         this.goToNextGuess();
         return;
       }
