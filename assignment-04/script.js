@@ -33,22 +33,6 @@ class Letter {
   }
 }
 
-class Word {
-  constructor() {
-    this.letters = [];
-  }
-
-  get() {
-    if (this.word) {
-      return this.word;
-    }
-
-    this.word = "ILUVU".toUpperCase();
-    this.letters = this.word.split("").map((ltr, idx) => new Letter(ltr, idx));
-    return this.word;
-  }
-}
-
 class Guess {
   constructor(index) {
     this.index = index;
@@ -108,7 +92,8 @@ class Guess {
 }
 
 class Game {
-  constructor() {
+  constructor(wordApi) {
+    this.wordApi = wordApi;
     this.$gameBoard = document.getElementById("game-board");
     this.guesses = [1, 2, 3, 4, 5, 6].map((idx) => new Guess(idx));
     this.guessIndex = 0;
@@ -132,23 +117,24 @@ class Game {
     document.body.addEventListener("keyup", (e) => {
       const key = e.key;
       const fullGuess = this.currentGuess.isFull();
-      const correctWord = this.word.get();
+      const correctWord = this.word;
 
       if (key === "Enter") {
-        if (fullGuess) {
-          const isCorrect = this.currentGuess.evaluate(correctWord);
-          if (isCorrect) {
-            alert("Congratulations, you guessed the word correctly!");
-            return;
-          }
-          if (this.guessIndex === 5) {
-            alert(`Sorry, the word was: ${correctWord}`);
-          }
-          this.goToNextGuess();
+        const wordError = this.wordApi.isValidWord(this.currentGuess.getGuessWord());
+        if (wordError !== "") {
+          alert(wordError);
           return;
         }
 
-        alert("You must enter 5 letters before submitting!");
+        const isCorrect = this.currentGuess.evaluate(correctWord);
+        if (isCorrect) {
+          alert("Congratulations, you guessed the word correctly!");
+          return;
+        }
+        if (this.guessIndex === 5) {
+          alert(`Sorry, the word was: ${correctWord}`);
+        }
+        this.goToNextGuess();
         return;
       }
 
@@ -169,14 +155,39 @@ class Game {
     });
   }
 
-  startGame() {
-    this.word = new Word();
+  async startGame() {
+    this.word = await this.wordApi.getRandomWord();
     this.initKeyboard();
     this.createEmptyBoard();
-    this.word.get();
+  }
+}
+
+class WordAPI {
+  constructor(apiKey) {
+    this.setupAPI(apiKey);
+  }
+
+  async getRandomWord() {
+    return Promise.resolve("ILUVU");
+  }
+
+  setupAPI(apiKey) {
+    console.log(`API Key: ${apiKey}`);
+  }
+
+  isValidWord(word) {
+    console.log(word);
+    if (word.length !== 5) {
+      return "Sorry, you must enter a five letter word";
+    }
+    if (word === "DEBUG") {
+      return "Sorry, this word was not found in our dictionary";
+    }
+    return "";
   }
 }
 
 document.body.onload = () => {
-  new Game();
+  const API_KEY = "";
+  new Game(new WordAPI());
 };
