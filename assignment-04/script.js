@@ -174,10 +174,7 @@ class Game {
   }
 
   async enableDebugMode() {
-    this.debugMode = true;
-    const correctAnswer = await this.wordApi.getAnswer();
-    this.correctAnswer = correctAnswer;
-    const letters = correctAnswer.split("").map((l) => new Letter(l));
+    const letters = this.correctAnswer.split("").map((l) => new Letter(l));
     const correctGuess = new Guess(-1, letters);
 
     const $debugMsg = document.createElement("p");
@@ -227,15 +224,14 @@ class Game {
 
   async evaluateGuess() {
     const guessWord = this.currentGuess.getGuessWord();
-    const evaluatedGuess = this.debugMode
-      ? this.currentGuess.debugEvaluate(this.correctAnswer)
-      : await this.wordApi.evaluate(guessWord);
-    if (evaluatedGuess.error) {
-      alert(evaluatedGuess.error);
+    const validatedGuess = await this.wordApi.validateWord(guessWord);
+    if (validatedGuess.error) {
+      alert(validatedGuess.error);
       return;
     }
     this.updateGuessedLetters(this.currentGuess.letters);
 
+    const evaluatedGuess = this.currentGuess.debugEvaluate(this.correctAnswer);
     const isCorrect = this.currentGuess.evaluate(evaluatedGuess);
     if (isCorrect) {
       setTimeout(() => {
@@ -244,7 +240,7 @@ class Game {
       return;
     }
     if (this.guessIndex === 5) {
-      const correctWord = this.debugMode ? this.correctAnswer : await this.wordApi.getAnswer();
+      const correctWord = this.correctAnswer;
       this.endGame(`Sorry, the word was: ${correctWord}`);
       return;
     }
@@ -294,6 +290,7 @@ class Game {
   async startGame(isRestart = false) {
     this.toggleLoader(true);
     this.word = await this.wordApi.getRandomWord();
+    this.correctAnswer = this.word;
     this.toggleLoader(false);
     this.createEmptyBoard();
     if (isRestart) {
@@ -308,7 +305,7 @@ class WordAPI {
     this.baseUrl = "https://word.digitalnook.net/api/v1";
   }
 
-  async getRandomWord() {
+  async startGame() {
     const response = await fetch(`${this.baseUrl}/start_game/`, {
       method: "POST",
     }).then((res) => res.json());
@@ -318,7 +315,8 @@ class WordAPI {
     return response;
   }
 
-  async getAnswer() {
+  async getRandomWord() {
+    await this.startGame();
     const gameResult = await fetch(`${this.baseUrl}/finish_game/`, {
       method: "POST",
       body: JSON.stringify({
@@ -329,29 +327,24 @@ class WordAPI {
     return gameResult.answer;
   }
 
-  async evaluate(word) {
+  async validateWord(word) {
     if (word.length !== 5) {
       return {
         error: "Sorry, you must enter a five letter word",
       };
     }
 
-    const evaluatedResult = await fetch(`${this.baseUrl}/guess/`, {
-      method: "POST",
-      body: JSON.stringify({
-        id: this.id,
-        key: this.key,
-        guess: word,
-      }),
-    })
-      .then((res) => res.json())
-      .catch(() => {
-        return {
-          error: "Sorry, this word was already guessed or not found in our dictionary",
-        };
-      });
+    const wordDefinition = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`, {
+      method: "GET",
+    }).then((res) => res.json());
 
-    return evaluatedResult;
+    if (wordDefinition?.title === "No Definitions Found") {
+      return {
+        error: "Sorry, this is not a valid word, please try a new guess",
+      };
+    }
+
+    return wordDefinition;
   }
 }
 
