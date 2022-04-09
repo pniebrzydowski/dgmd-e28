@@ -241,7 +241,10 @@ class Game {
     }
     if (this.guessIndex === 5) {
       const correctWord = this.correctAnswer;
-      this.endGame(`Sorry, the word was: ${correctWord}`);
+      setTimeout(() => {
+        this.endGame(`Sorry, the word was: ${correctWord}`);
+      }, 0);
+
       return;
     }
     this.goToNextGuess();
