@@ -68,14 +68,9 @@ class Guess {
   debugEvaluate(correctAnswer) {
     const correctAnswerLetters = correctAnswer.split("");
     const guessLetters = this.letters.map((l) => l.letter);
-
-    console.log(correctAnswerLetters, guessLetters);
-
     let letterState = new Array(5).fill({ state: 0 });
 
-    console.log(letterState);
-
-    // check for green letters; remove them from the comparisons
+    // check for green letters; remove them from the comparison arrays
     guessLetters.forEach((letter, idx) => {
       if (letter === correctAnswerLetters[idx]) {
         correctAnswerLetters[idx] = "";
@@ -84,8 +79,7 @@ class Guess {
       }
     });
 
-    console.log(correctAnswerLetters, guessLetters, letterState);
-
+    // check for yellow letters and remove them from the comparison arrays
     guessLetters.forEach((letter, idx) => {
       if (letter === "") {
         return;
