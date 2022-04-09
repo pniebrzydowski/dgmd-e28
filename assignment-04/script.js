@@ -5,6 +5,7 @@ class Letter {
     this.isCorrect = false;
     this.isInWord = false;
   }
+
   generateElement() {
     const $letterEl = document.createElement("li");
     $letterEl.classList.add("letter");
@@ -21,14 +22,12 @@ class Letter {
     }
     return $letterEl;
   }
-  evaluate(wordGuess) {
-    const lettersGuessed = wordGuess.split("");
-    if (lettersGuessed.includes(this.letter)) {
-      if (lettersGuessed[this.index] === this.letter) {
-        this.isCorrect = true;
-      } else {
-        this.isInWord = true;
-      }
+
+  evaluate(guessResult) {
+    if (guessResult.state === 2) {
+      this.isCorrect = true;
+    } else if (guessResult.state === 1) {
+      this.isInWord = true;
     }
   }
 }
@@ -48,13 +47,13 @@ class Guess {
     return this.letters.reduce((word, letter) => (word += letter.letter), "");
   }
 
-  evaluate(correctWord) {
-    this.letters.forEach((letter) => {
-      letter.evaluate(correctWord);
+  evaluate(evaluatedResult) {
+    this.letters.forEach((letter, idx) => {
+      letter.evaluate(evaluatedResult[idx]);
     });
     this.updateRow();
 
-    return this.getGuessWord() === correctWord;
+    return evaluatedResult.every((letter) => letter.state === 2);
   }
 
   isFull() {
@@ -67,7 +66,9 @@ class Guess {
 
   removeLastLetter() {
     this.letters[this.letterCount - 1] = new Letter();
-    this.letterCount--;
+    if (this.letterCount > 0) {
+      this.letterCount--;
+    }
     this.updateRow();
   }
 
@@ -144,31 +145,35 @@ class Game {
     }
   }
 
+  async evaluateGuess() {
+    const guessWord = this.currentGuess.getGuessWord();
+    const evaluatedGuess = await this.wordApi.evaluate(guessWord);
+    if (evaluatedGuess.error) {
+      alert(evaluatedGuess.error);
+      return;
+    }
+    const isCorrect = this.currentGuess.evaluate(evaluatedGuess);
+    if (isCorrect) {
+      this.endGame(`Congratulations, you guessed the word ${guessWord} correctly`);
+      return;
+    }
+    this.updateGuessedLetters(this.currentGuess.letters);
+    if (this.guessIndex === 5) {
+      const correctWord = await this.wordApi.endGame();
+      this.endGame(`Sorry, the word was: ${correctWord}`);
+      return;
+    }
+    this.goToNextGuess();
+    return;
+  }
+
   initKeyboard() {
     document.body.addEventListener("keyup", (e) => {
       const key = e.key;
       const fullGuess = this.currentGuess.isFull();
-      const correctWord = this.word;
 
       if (key === "Enter") {
-        const wordError = this.wordApi.isValidWord(this.currentGuess.getGuessWord());
-        if (wordError !== "") {
-          alert(wordError);
-          return;
-        }
-
-        const isCorrect = this.currentGuess.evaluate(correctWord);
-        if (isCorrect) {
-          this.endGame("Congratulations, you guessed the word correctly!");
-          return;
-        }
-        this.updateGuessedLetters(this.currentGuess.letters);
-        if (this.guessIndex === 5) {
-          this.endGame(`Sorry, the word was: ${correctWord}`);
-          return;
-        }
-        this.goToNextGuess();
-        return;
+        return this.evaluateGuess();
       }
 
       if (key === "Backspace") {
@@ -177,14 +182,14 @@ class Game {
       }
 
       if (key.length !== 1 || !/[a-zA-Z]/.test(key)) {
-        console.log("Not a letter", key);
+        // not a letter
         return;
       }
 
       if (fullGuess) {
         return;
       }
-      this.currentGuess.addNewLetter(key.toUpperCase());
+      this.currentGuess.addNewLetter(key);
     });
   }
 
@@ -192,8 +197,19 @@ class Game {
     this.startGame(true);
   }
 
+  toggleLoader(visible) {
+    if (!this.$loader) {
+      this.$loaderDiv = document.createElement("div");
+      this.$loaderDiv.innerHTML = "Loading...";
+      this.$gameBoard.prepend(this.$loaderDiv);
+    }
+    this.$loaderDiv.className = visible ? "visible" : "hidden";
+  }
+
   async startGame(isRestart = false) {
+    this.toggleLoader(true);
     this.word = await this.wordApi.getRandomWord();
+    this.toggleLoader(false);
     this.createEmptyBoard();
     if (isRestart) {
       return;
@@ -203,26 +219,54 @@ class Game {
 }
 
 class WordAPI {
-  constructor(apiKey) {
-    this.setupAPI(apiKey);
+  constructor() {
+    this.baseUrl = "https://word.digitalnook.net/api/v1";
   }
 
   async getRandomWord() {
-    return Promise.resolve("ILUVU");
+    const response = await fetch(`${this.baseUrl}/start_game/`, {
+      method: "POST",
+    }).then((res) => res.json());
+    this.id = response.id;
+    this.key = response.key;
+    this.wordId = response.wordID;
+    return response;
   }
 
-  setupAPI(apiKey) {
-    console.log(`API Key: ${apiKey}`);
+  async endGame() {
+    const gameResult = await fetch(`${this.baseUrl}/finish_game/`, {
+      method: "POST",
+      body: JSON.stringify({
+        id: this.id,
+        key: this.key,
+      }),
+    }).then((res) => res.json());
+    return gameResult.answer;
   }
 
-  isValidWord(word) {
+  async evaluate(word) {
     if (word.length !== 5) {
-      return "Sorry, you must enter a five letter word";
+      return {
+        error: "Sorry, you must enter a five letter word",
+      };
     }
-    if (word === "DEBUG") {
-      return "Sorry, this word was not found in our dictionary";
-    }
-    return "";
+
+    const evaluatedResult = await fetch(`${this.baseUrl}/guess/`, {
+      method: "POST",
+      body: JSON.stringify({
+        id: this.id,
+        key: this.key,
+        guess: word,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => {
+        return {
+          error: "Sorry, this word was already guessed or not found in our dictionary",
+        };
+      });
+
+    return evaluatedResult;
   }
 }
 

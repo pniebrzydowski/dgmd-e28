@@ -42,11 +42,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  text-transform: uppercase;
   
   /* trick to make it square */
   padding-bottom: calc((100% / 5 - 8px) / 2);
   padding-top: calc((100% / 5 - 8px) / 2);
   height: 0;
+}
+
+#letters-guessed .letter {
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  font-size: 18px;
 }
 
 .letter + .letter {
