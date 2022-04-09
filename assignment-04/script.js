@@ -23,6 +23,19 @@ class Letter {
     return $letterEl;
   }
 
+  debugEvaluate(correctAnswer) {
+    const correctAnswerLetters = correctAnswer.split("");
+    const letterInWord = correctAnswerLetters.filter((l) => letter.letter);
+    if (letterInWord.length === 0) {
+      return { state: 0 };
+    }
+
+    if (letterInWord.length === 1) {
+      const state = correctAnswerLetters[idx] === letter.letter ? 2 : 1;
+      return { state };
+    }
+  }
+
   evaluate(guessResult) {
     if (guessResult.state === 2) {
       this.isCorrect = true;
@@ -54,14 +67,38 @@ class Guess {
 
   debugEvaluate(correctAnswer) {
     const correctAnswerLetters = correctAnswer.split("");
-    const evaluatedGuess = this.letters.map((letter, idx) => {
-      const state =
-        correctAnswerLetters[idx] === letter.letter ? 2 : correctAnswerLetters.includes(letter.letter) ? 1 : 0;
-      const evaluated = { state };
-      letter.evaluate(evaluated);
-      return evaluated;
+    const guessLetters = this.letters.map((l) => l.letter);
+
+    console.log(correctAnswerLetters, guessLetters);
+
+    let letterState = new Array(5).fill({ state: 0 });
+
+    console.log(letterState);
+
+    // check for green letters; remove them from the comparisons
+    guessLetters.forEach((letter, idx) => {
+      if (letter === correctAnswerLetters[idx]) {
+        correctAnswerLetters[idx] = "";
+        guessLetters[idx] = "";
+        letterState[idx] = { state: 2 };
+      }
     });
-    return evaluatedGuess;
+
+    console.log(correctAnswerLetters, guessLetters, letterState);
+
+    guessLetters.forEach((letter, idx) => {
+      if (letter === "") {
+        return;
+      }
+      const correctLetterIndex = correctAnswerLetters.findIndex((l) => l === letter);
+      if (correctLetterIndex !== -1) {
+        correctAnswerLetters[correctLetterIndex] = "";
+        guessLetters[idx] = "";
+        letterState[idx] = { state: 1 };
+      }
+    });
+
+    return letterState;
   }
 
   evaluate(evaluatedResult) {
