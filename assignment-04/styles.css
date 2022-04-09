@@ -11,6 +11,10 @@
   max-width: 584px;
 }
 
+.debug-msg {
+  color: rgb(255, 100, 0);
+}
+
 .row, #letters-guessed {
   list-style: none;
   display: flex;
@@ -20,6 +24,15 @@
 
 .row {
   margin-top: 8px;
+}
+
+.row.row-answer {
+  margin-bottom: 32px;
+}
+
+.row.row-answer .letter {
+  background: #888;
+  color: #fff;
 }
 
 #letters-guessed:before {

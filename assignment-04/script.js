@@ -33,9 +33,14 @@ class Letter {
 }
 
 class Guess {
-  constructor(index) {
+  constructor(index, letters) {
     this.index = index;
     this.letterCount = 0;
+    if (letters) {
+      this.letters = letters;
+      return;
+    }
+
     const emptyWord = [];
     for (let i = 0; i < 5; i++) {
       emptyWord.push(new Letter());
@@ -45,6 +50,18 @@ class Guess {
 
   getGuessWord() {
     return this.letters.reduce((word, letter) => (word += letter.letter), "");
+  }
+
+  debugEvaluate(correctAnswer) {
+    const correctAnswerLetters = correctAnswer.split("");
+    const evaluatedGuess = this.letters.map((letter, idx) => {
+      const state =
+        correctAnswerLetters[idx] === letter.letter ? 2 : correctAnswerLetters.includes(letter.letter) ? 1 : 0;
+      const evaluated = { state };
+      letter.evaluate(evaluated);
+      return evaluated;
+    });
+    return evaluatedGuess;
   }
 
   evaluate(evaluatedResult) {
@@ -125,8 +142,33 @@ class Game {
     this.$guessedLettersContainer.innerHTML = newLetterHtml;
   }
 
+  async enableDebugMode() {
+    this.debugMode = true;
+    const correctAnswer = await this.wordApi.getAnswer();
+    this.correctAnswer = correctAnswer;
+    const letters = correctAnswer.split("").map((l) => new Letter(l));
+    const correctGuess = new Guess(-1, letters);
+
+    const $debugMsg = document.createElement("p");
+    $debugMsg.className = "debug-msg";
+    $debugMsg.innerHTML = "Debug Mode Active - Correct Answer:";
+
+    const $answerRow = correctGuess.generateElement();
+    $answerRow.className = "row row-answer";
+    this.$gameBoard.querySelector(".btn-debug").remove();
+    this.$gameBoard.prepend($debugMsg, $answerRow);
+  }
+
+  addDebugModeButton() {
+    const $debugBtn = document.createElement("button");
+    $debugBtn.innerHTML = "Enable Debug Mode";
+    $debugBtn.className = "btn-debug";
+    $debugBtn.addEventListener("click", () => this.enableDebugMode());
+    this.$gameBoard.appendChild($debugBtn);
+  }
   createEmptyBoard() {
     this.$gameBoard.innerHTML = "";
+    this.addDebugModeButton();
     this.guesses.forEach((guess) => {
       const $el = guess.generateElement();
       this.$gameBoard.appendChild($el);
@@ -154,11 +196,15 @@ class Game {
 
   async evaluateGuess() {
     const guessWord = this.currentGuess.getGuessWord();
-    const evaluatedGuess = await this.wordApi.evaluate(guessWord);
+    const evaluatedGuess = this.debugMode
+      ? this.currentGuess.debugEvaluate(this.correctAnswer)
+      : await this.wordApi.evaluate(guessWord);
     if (evaluatedGuess.error) {
       alert(evaluatedGuess.error);
       return;
     }
+    this.updateGuessedLetters(this.currentGuess.letters);
+
     const isCorrect = this.currentGuess.evaluate(evaluatedGuess);
     if (isCorrect) {
       setTimeout(() => {
@@ -166,9 +212,8 @@ class Game {
       }, 0);
       return;
     }
-    this.updateGuessedLetters(this.currentGuess.letters);
     if (this.guessIndex === 5) {
-      const correctWord = await this.wordApi.endGame();
+      const correctWord = this.debugMode ? this.correctAnswer : await this.wordApi.getAnswer();
       this.endGame(`Sorry, the word was: ${correctWord}`);
       return;
     }
@@ -242,7 +287,7 @@ class WordAPI {
     return response;
   }
 
-  async endGame() {
+  async getAnswer() {
     const gameResult = await fetch(`${this.baseUrl}/finish_game/`, {
       method: "POST",
       body: JSON.stringify({
