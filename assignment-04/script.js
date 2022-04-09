@@ -109,13 +109,20 @@ class Game {
     }
 
     newLetters.forEach((letter) => {
-      if (this.guessedLetters.includes(letter.letter)) {
+      const existingLetterIndex = this.guessedLetters.findIndex((l) => l.letter === letter.letter);
+      if (existingLetterIndex !== -1) {
+        this.guessedLetters[existingLetterIndex] = letter;
         return;
       }
-      this.guessedLetters.push(letter.letter);
-      const $newLetterEl = letter.generateElement();
-      this.$guessedLettersContainer.appendChild($newLetterEl);
+      this.guessedLetters.push(letter);
     });
+
+    this.guessedLetters = this.guessedLetters.sort((a, b) => a.letter.localeCompare(b.letter));
+    const newLetterHtml = this.guessedLetters.reduce(
+      (html, letter) => (html += letter.generateElement().outerHTML),
+      ""
+    );
+    this.$guessedLettersContainer.innerHTML = newLetterHtml;
   }
 
   createEmptyBoard() {
@@ -154,7 +161,9 @@ class Game {
     }
     const isCorrect = this.currentGuess.evaluate(evaluatedGuess);
     if (isCorrect) {
-      this.endGame(`Congratulations, you guessed the word ${guessWord} correctly`);
+      setTimeout(() => {
+        this.endGame(`Congratulations, you guessed the word ${guessWord} correctly`);
+      }, 0);
       return;
     }
     this.updateGuessedLetters(this.currentGuess.letters);
