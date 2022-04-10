@@ -131,6 +131,11 @@ class Game {
   constructor(wordApi) {
     this.wordApi = wordApi;
     this.$gameBoard = document.getElementById("game-board");
+    this.$gameStats = document.getElementById("game-stats");
+    this.$playerStats = document.getElementById("player-stats");
+    this.totalGuesses = 0;
+    this.gamesPlayed = 0;
+    this.wins = 0;
     this.initGame();
     this.startGame();
   }
@@ -202,7 +207,25 @@ class Game {
     this.guessedLetters = [];
   }
 
-  endGame(msg) {
+  updateGameStats(isWin) {
+    this.$gameStats.innerHTML = isWin
+      ? `Last Game - Number of Guesses: ${(this.guessIndex + 1).toFixed(2)}`
+      : "Last Game - You were unable to guess the word in six tries";
+  }
+
+  updatePlayerStats() {
+    const guessAvg = this.totalGuesses / this.gamesPlayed;
+    this.$playerStats.innerHTML = `Games Played: ${this.gamesPlayed}, Wins: ${this.wins}, Average Guesses: ${guessAvg}`;
+  }
+
+  endGame(isWin, msg) {
+    this.gamesPlayed++;
+    if (isWin) {
+      this.wins++;
+    }
+    this.totalGuesses += this.guessIndex + 1;
+    this.updateGameStats(isWin);
+    this.updatePlayerStats();
     if (confirm(`${msg}. Would you like to play again?`)) {
       this.initGame();
       this.restartGame();
@@ -222,14 +245,14 @@ class Game {
     const isCorrect = this.currentGuess.evaluate(evaluatedGuess);
     if (isCorrect) {
       setTimeout(() => {
-        this.endGame(`Congratulations, you guessed the word ${guessWord} correctly`);
+        this.endGame(true, `Congratulations, you guessed the word ${guessWord} correctly`);
       }, 0);
       return;
     }
     if (this.guessIndex === 5) {
       const correctWord = this.correctAnswer;
       setTimeout(() => {
-        this.endGame(`Sorry, the word was: ${correctWord}`);
+        this.endGame(false, `Sorry, the word was: ${correctWord}`);
       }, 0);
 
       return;
