@@ -23,19 +23,6 @@ class Letter {
     return $letterEl;
   }
 
-  debugEvaluate(correctAnswer) {
-    const correctAnswerLetters = correctAnswer.split("");
-    const letterInWord = correctAnswerLetters.filter((l) => letter.letter);
-    if (letterInWord.length === 0) {
-      return { state: 0 };
-    }
-
-    if (letterInWord.length === 1) {
-      const state = correctAnswerLetters[idx] === letter.letter ? 2 : 1;
-      return { state };
-    }
-  }
-
   evaluate(guessResult) {
     if (guessResult.state === 2) {
       this.isCorrect = true;
@@ -65,7 +52,7 @@ class Guess {
     return this.letters.reduce((word, letter) => (word += letter.letter), "");
   }
 
-  debugEvaluate(correctAnswer) {
+  evaluateGuess(correctAnswer) {
     const correctAnswerLetters = correctAnswer.split("");
     const guessLetters = this.letters.map((l) => l.letter);
     let letterState = new Array(5).fill({ state: 0 });
@@ -231,7 +218,7 @@ class Game {
     }
     this.updateGuessedLetters(this.currentGuess.letters);
 
-    const evaluatedGuess = this.currentGuess.debugEvaluate(this.correctAnswer);
+    const evaluatedGuess = this.currentGuess.evaluateGuess(this.correctAnswer);
     const isCorrect = this.currentGuess.evaluate(evaluatedGuess);
     if (isCorrect) {
       setTimeout(() => {
