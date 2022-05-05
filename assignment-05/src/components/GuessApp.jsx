@@ -37,21 +37,24 @@ const GuessApp = () => {
           <li><Link to="/settings">Game Settings</Link></li>
         </ul>
       </nav>
-      <Routes>
-        <Route path='/' element={
-          <GameBoard range={range} guessesAllowed={guessesAllowed} onGameEnd={onGameEnd} />
-        }/>
- 
-        <Route path="/stats" element={
-          <PlayerStats playerStats={playerStats} />
-        }/>
-        <Route path="/settings" element={
-          <GameSettings
-              range={range} setRange={setRange}
-              guessesAllowed={guessesAllowed} setGuessesAllowed={setGuessesAllowed}
-              />
-        } />
-      </Routes>
+
+      <div className="route-container">
+        <Routes>
+          <Route path='/' element={
+            <GameBoard range={range} guessesAllowed={guessesAllowed} onGameEnd={onGameEnd} />
+          }/>
+   
+          <Route path="/stats" element={
+            <PlayerStats playerStats={playerStats} />
+          }/>
+          <Route path="/settings" element={
+            <GameSettings
+            range={range} setRange={setRange}
+            guessesAllowed={guessesAllowed} setGuessesAllowed={setGuessesAllowed}
+            />
+          } />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 };
