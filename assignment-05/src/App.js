@@ -1,9 +1,9 @@
 import './App.css';
-import GameWrapper from './components/GameWrapper';
+import GuessApp from './components/GuessApp';
 
 function App() {
   return (
-    <GameWrapper />
+    <GuessApp />
   );
 }
 

@@ -5,7 +5,7 @@ import GameBoard from './GameBoard.jsx';
 import GameSettings from './GameSettings.jsx';
 import PlayerStats from './PlayerStats.jsx';
 
-const GameWrapper = () => {
+const GuessApp = () => {
   const [range, setRange] = useState({
     min: 0,
     max: 100
@@ -39,4 +39,4 @@ const GameWrapper = () => {
   );
 };
 
-export default GameWrapper;
+export default GuessApp;
