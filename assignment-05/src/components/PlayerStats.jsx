@@ -1,4 +1,3 @@
-/* eslint-disable */
 const PlayerStats = ({playerStats: {
   gamesPlayed,
   correctGuesses,

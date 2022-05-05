@@ -1,5 +1,6 @@
-/* eslint-disable */
 import { useState } from 'react';
+
+import {Link, Route, BrowserRouter, Routes} from 'react-router-dom';
 
 import GameBoard from './GameBoard.jsx';
 import GameSettings from './GameSettings.jsx';
@@ -28,14 +29,30 @@ const GuessApp = () => {
   }
 
   return (
-    <>
-      <PlayerStats playerStats={playerStats} />
-      <GameSettings
-        range={range} setRange={setRange}
-        guessesAllowed={guessesAllowed} setGuessesAllowed={setGuessesAllowed}
-      />
-      <GameBoard range={range} guessesAllowed={guessesAllowed} onGameEnd={onGameEnd} />
-    </>
+    <BrowserRouter>
+      <nav>
+        <ul>
+          <li><Link to="/">Game Board</Link></li>
+          <li><Link to="/stats">Player Stats</Link></li>
+          <li><Link to="/settings">Game Settings</Link></li>
+        </ul>
+      </nav>
+      <Routes>
+        <Route path='/' element={
+          <GameBoard range={range} guessesAllowed={guessesAllowed} onGameEnd={onGameEnd} />
+        }/>
+ 
+        <Route path="/stats" element={
+          <PlayerStats playerStats={playerStats} />
+        }/>
+        <Route path="/settings" element={
+          <GameSettings
+              range={range} setRange={setRange}
+              guessesAllowed={guessesAllowed} setGuessesAllowed={setGuessesAllowed}
+              />
+        } />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

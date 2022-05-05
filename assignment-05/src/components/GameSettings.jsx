@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { useState } from 'react';
 
 const GameSettings = ({range: { min, max }, setRange, guessesAllowed, setGuessesAllowed}) => {
