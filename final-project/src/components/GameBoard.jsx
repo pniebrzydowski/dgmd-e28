@@ -6,7 +6,7 @@ const getHandScore = (hand) => hand.cards.reduce((prev, curr) => prev + curr, 0)
 
 
 const GameBoard = ({players, onGameEnd}) => {
-  const [gameIsActive, setGameIsActive] = useState(false);
+  const [playDirection, setPlayDirection] = useState(null);
   const [gameStart, setGameStart] = useState(null);
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [hands, setHands] = useState([]);
@@ -25,7 +25,7 @@ const GameBoard = ({players, onGameEnd}) => {
   }
 
   const endGame = () => {
-    setGameIsActive(false);
+    setPlayDirection(null);
     onGameEnd({
       start: gameStart,
       end: new Date().valueOf(),
@@ -41,7 +41,43 @@ const GameBoard = ({players, onGameEnd}) => {
     setHands(h);
     setGameStart(new Date().valueOf());
     setCurrentPlayer(0);
-    setGameIsActive(true);
+    setPlayDirection('forward');
+  }
+
+  const advanceTurn = (activePlayer, playDirection) => {
+    if (playDirection === 'forward') {
+      if (activePlayer === players.length - 1) {
+        return 0;
+      }
+      return activePlayer + 1; 
+    }
+
+    if (activePlayer === 0) {
+      return players.length - 1;
+    }
+    return activePlayer - 1;
+  }
+
+  const evaluateCard = (cardValue) => {
+    if (cardValue === 'Draw Four' || cardValue === 'Wild') {
+      console.log('wild!')
+    }
+    if (cardValue === 'R') {
+      setPlayDirection('reverse');
+    }
+
+    let actOnPlayer = advanceTurn(currentPlayer);
+
+    if (cardValue === 'S') {
+      actOnPlayer = advanceTurn(actOnPlayer);
+    }
+    if (cardValue === 'D') {
+      console.log(hands[actOnPlayer].player.name, ' draws 2');
+    }
+    if (cardValue === 'Draw Four') {
+      console.log(hands[actOnPlayer].player.name, ' draws 4');
+    }
+    setCurrentPlayer(actOnPlayer);
   }
 
   const playCard = (hand, card) => {
@@ -52,21 +88,26 @@ const GameBoard = ({players, onGameEnd}) => {
     }
     const idx = hand.cards.findIndex(handCard => handCard.value === card.value && handCard.color === card.color);
     hand.cards.splice(idx, 1);
+
+    setHands((prevState) => {
+      const h = [
+        ...prevState
+      ];
+      const playerIndex = h.findIndex(playerHand => playerHand.player.id === hand.player.id);
+      h[playerIndex].cards = hand.cards;
+      return h;
+    });
     deck.playCard(card);
-    if (currentPlayer === players.length - 1) {
-      setCurrentPlayer(0);
-      return;
-    }
-    setCurrentPlayer(currentPlayer + 1);
+    evaluateCard(card.value);
   }
   
   const gameOver = hands.some(hand => hand.cards !== null && hand.cards.length === 0);
 
   return (
     <>
-      <button type="button" onClick={startNewGame} disabled={gameIsActive}>Start New Game</button>
+      <button type="button" onClick={startNewGame} disabled={playDirection !== null}>Start New Game</button>
 
-      {gameIsActive && (
+      {playDirection !== null && (
         <>
           {hands.map(hand => {
             return (

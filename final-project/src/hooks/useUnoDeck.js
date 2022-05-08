@@ -44,38 +44,40 @@ const buildUnoDeck = () => {
 
 const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-const validatePlayedCard = (card, prevCard) => {
-  if (card.color === 'black') {
-    return true;
-  }
-  if (card.color === prevCard.color) {
-    return true;
-  }
-  if (card.value === prevCard.value) {
-    return true;
-  }
-  return false;
-};
-
 const useUnoDeck = () => {
   const remainingCards = useRef(buildUnoDeck());
   const stack = useRef([]);
+  const currentColor = useRef(null);
 
+  const validatePlayedCard = (card) => {
+    const lastValue = stack.current[stack.current.length - 1].value;
+    if (card.color === 'black') {
+      return true;
+    }
+    
+    if (card.color === currentColor.current) {
+      return true;
+    }
+    if (card.value === lastValue) {
+      return true;
+    }
+    return false;
+  };
+
+  const addCardToStack = card => {
+    stack.current.push(card);
+    currentColor.current = card.color;
+  }
 
   const playCard = card => {
-    const isValid = validatePlayedCard(card, stack.current[stack.current.length - 1]);
+    const isValid = validatePlayedCard(card);
     if (!isValid) {
       return false;
     }
-    stack.current.push(card);
+    addCardToStack(card);
     return true;
   }
 
-  const flipCard = () => {
-    const card = getRandomCard();
-    stack.current.push(card);
-  }
-  
   const getRandomCard = () => {
     const cardsLeft = remainingCards.current.length;
     const randomNumber = getRandomNumber(0, cardsLeft - 1);
@@ -83,6 +85,10 @@ const useUnoDeck = () => {
     remainingCards.current.splice(randomNumber, 1);
     return card;
   }
+
+  const flipCard = () => {
+    addCardToStack(getRandomCard());
+  }  
 
   const dealNewCards = (n) => {
     const hand = [];
