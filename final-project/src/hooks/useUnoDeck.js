@@ -18,6 +18,8 @@ class Card {
     this.value = value;
     this.color = color;
   }
+
+  display = () => `${this.value}-${this.color}`;
 }
 
 const buildUnoDeck = () => {
@@ -35,15 +37,44 @@ const buildUnoDeck = () => {
   });
   for(let i = 1; i <= 4; i++) {
     deck.push(new Card('Wild', 'black'));
-    deck.push(new Card('Draw Four'));
+    deck.push(new Card('Draw Four', 'black'));
   }
   return deck;
 }
 
 const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
+const validatePlayedCard = (card, prevCard) => {
+  if (card.color === 'black') {
+    return true;
+  }
+  if (card.color === prevCard.color) {
+    return true;
+  }
+  if (card.value === prevCard.value) {
+    return true;
+  }
+  return false;
+};
+
 const useUnoDeck = () => {
   const remainingCards = useRef(buildUnoDeck());
+  const stack = useRef([]);
+
+
+  const playCard = card => {
+    const isValid = validatePlayedCard(card, stack.current[stack.current.length - 1]);
+    if (!isValid) {
+      return false;
+    }
+    stack.current.push(card);
+    return true;
+  }
+
+  const flipCard = () => {
+    const card = getRandomCard();
+    stack.current.push(card);
+  }
   
   const getRandomCard = () => {
     const cardsLeft = remainingCards.current.length;
@@ -61,9 +92,11 @@ const useUnoDeck = () => {
     return hand;
   };
 
-  console.log(remainingCards.current);
   return {
-    dealNewCards
+    dealNewCards,
+    flipCard,
+    playCard,
+    currentCard: stack.current.length > 0 ? stack.current[stack.current.length - 1] : null
   }
 }
 

@@ -37,10 +37,27 @@ const GameBoard = ({players, onGameEnd}) => {
     h.forEach(hand => {
       hand.cards = deck.dealNewCards(7)
     });
+    deck.flipCard();
     setHands(h);
     setGameStart(new Date().valueOf());
-    setCurrentPlayer(hands[0].player.name);
+    setCurrentPlayer(0);
     setGameIsActive(true);
+  }
+
+  const playCard = (hand, card) => {
+    const isValid = deck.playCard(card);
+    if (!isValid) {
+      alert('Sorry, that card cannot be played at this time');
+      return;
+    }
+    const idx = hand.cards.findIndex(handCard => handCard.value === card.value && handCard.color === card.color);
+    hand.cards.splice(idx, 1);
+    deck.playCard(card);
+    if (currentPlayer === players.length - 1) {
+      setCurrentPlayer(0);
+      return;
+    }
+    setCurrentPlayer(currentPlayer + 1);
   }
   
   const gameOver = hands.some(hand => hand.cards !== null && hand.cards.length === 0);
@@ -52,14 +69,18 @@ const GameBoard = ({players, onGameEnd}) => {
       {gameIsActive && (
         <>
           {hands.map(hand => {
-            console.log(hand.cards);
             return (
             <ul key={`player-${hand.player.id}-hand`}>
               <p>{hand.player.name}</p>
               {hand.cards && (
                 <ul>
                   {hand.cards.map((card, idx) => (
-                    <li key={idx}>{card.value}-{card.color}</li>
+                    <li key={idx}>
+                      {card.display()}
+                      {hands[currentPlayer].player.name === hand.player.name && (
+                        <button type="button" onClick={() => playCard(hand, card)}>Play!</button>
+                      )}
+                    </li>
                   ))}
                 </ul>
               )}
@@ -68,7 +89,13 @@ const GameBoard = ({players, onGameEnd}) => {
         </>
       )}
 
-      {currentPlayer && <p>{currentPlayer}'s turn</p>}
+      {deck.currentCard && (
+      <p>
+        Current Card: {deck.currentCard.display()}
+      </p>
+      )}
+
+      {currentPlayer !== null && <p>{hands[currentPlayer].player.name}'s turn</p>}
 
       {gameOver && (
         <p>Final Scores:
