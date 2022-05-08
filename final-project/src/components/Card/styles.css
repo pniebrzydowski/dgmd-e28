@@ -1,0 +1,29 @@
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 150px;
+  border: 1px solid #333;
+  border-radius: 11px;
+  padding: 4px;
+  color: #fff;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.card-black {
+  background: #000;
+}
+.card-blue {
+  background: #00f;
+}
+.card-green {
+  background: #090;
+}
+.card-red {
+  background: #f00;
+}
+.card-yellow {
+  background: rgb(235, 188, 0);
+}

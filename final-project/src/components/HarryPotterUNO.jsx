@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import {Link, Route, BrowserRouter, Routes} from 'react-router-dom';
 
-import GameBoard from './GameBoard.jsx';
-import GameSettings from './GameSettings.jsx';
-import ScoreHistory from './ScoreHistory.jsx';
+import GameBoard from './GameBoard';
+import GameSettings from './GameSettings';
+import ScoreHistory from './ScoreHistory';
 
 const HarryPotterUNO = () => {
   const [games] = useState([]);

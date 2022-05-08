@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 
-import useUnoDeck from '../hooks/useUnoDeck'
+import useUnoDeck from '../../hooks/useUnoDeck'
+import Deck from '../Deck';
+import GameStatus from '../GameStatus';
+import PlayerHand from '../PlayerHand';
+
+import './styles.css';
 
 const getHandScore = (hand) => hand.cards.reduce((prev, curr) => prev + curr, 0);
-
 
 const GameBoard = ({players, onGameEnd}) => {
   const [playDirection, setPlayDirection] = useState(null);
   const [gameStart, setGameStart] = useState(null);
-  const [currentPlayer, setCurrentPlayer] = useState(null);
+  const [currentPlayerIndex, setcurrentPlayerIndex] = useState(null);
   const [hands, setHands] = useState([]);
   const deck = useUnoDeck();
 
@@ -40,7 +44,7 @@ const GameBoard = ({players, onGameEnd}) => {
     deck.flipCard();
     setHands(h);
     setGameStart(new Date().valueOf());
-    setCurrentPlayer(0);
+    setcurrentPlayerIndex(0);
     setPlayDirection('forward');
   }
 
@@ -66,7 +70,7 @@ const GameBoard = ({players, onGameEnd}) => {
       setPlayDirection('reverse');
     }
 
-    let actOnPlayer = advanceTurn(currentPlayer);
+    let actOnPlayer = advanceTurn(currentPlayerIndex);
 
     if (cardValue === 'S') {
       actOnPlayer = advanceTurn(actOnPlayer);
@@ -77,7 +81,7 @@ const GameBoard = ({players, onGameEnd}) => {
     if (cardValue === 'Draw Four') {
       console.log(hands[actOnPlayer].player.name, ' draws 4');
     }
-    setCurrentPlayer(actOnPlayer);
+    setcurrentPlayerIndex(actOnPlayer);
   }
 
   const playCard = (hand, card) => {
@@ -102,41 +106,31 @@ const GameBoard = ({players, onGameEnd}) => {
   }
   
   const gameOver = hands.some(hand => hand.cards !== null && hand.cards.length === 0);
+  const currentPlayer = (hands && currentPlayerIndex !== null) ? hands[currentPlayerIndex].player : null;
 
   return (
     <>
       <button type="button" onClick={startNewGame} disabled={playDirection !== null}>Start New Game</button>
 
-      {playDirection !== null && (
+      {!!playDirection && (
         <>
-          {hands.map(hand => {
-            return (
-            <ul key={`player-${hand.player.id}-hand`}>
-              <p>{hand.player.name}</p>
-              {hand.cards && (
-                <ul>
-                  {hand.cards.map((card, idx) => (
-                    <li key={idx}>
-                      {card.display()}
-                      {hands[currentPlayer].player.name === hand.player.name && (
-                        <button type="button" onClick={() => playCard(hand, card)}>Play!</button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </ul>
-          )})}
+          <Deck deck={deck} />
+          <GameStatus currentPlayer={currentPlayer} />
+          <ul className="playerHands">
+            {hands.map(hand => (
+              <PlayerHand
+                key={`player-${hand.player.id}-hand`}
+                player={hand.player}
+                cards={hand.cards}
+                isPlayersTurn={currentPlayer.id === hand.player.id}
+                onPlay={(card) => {
+                  playCard(hand, card);
+                }}
+              />
+            ))}
+          </ul>
         </>
       )}
-
-      {deck.currentCard && (
-      <p>
-        Current Card: {deck.currentCard.display()}
-      </p>
-      )}
-
-      {currentPlayer !== null && <p>{hands[currentPlayer].player.name}'s turn</p>}
 
       {gameOver && (
         <p>Final Scores:

@@ -19,7 +19,7 @@ class Card {
     this.color = color;
   }
 
-  display = () => `${this.value}-${this.color}`;
+  display = () => this.value;
 }
 
 const buildUnoDeck = () => {
