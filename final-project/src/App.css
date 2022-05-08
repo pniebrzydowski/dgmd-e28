@@ -1,0 +1,35 @@
+nav ul {
+  list-style: none;
+  display: flex;
+  padding-left: 0;
+}
+
+nav ul li a {
+  display: block;
+  padding: 8px;
+}
+
+nav ul li a:hover {
+  text-decoration: none;
+}
+
+nav ul li + nav ul li {
+  margin-left: 8px;
+}
+
+.route-container {
+  padding: 8px;
+}
+
+button, input {
+  padding: 4px 8px;
+}
+
+fieldset {
+  padding: 4px 0;
+  border: 0;
+}
+
+label {
+  padding-right: 8px;
+}
