@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import useUnoDeck from '../../hooks/useUnoDeck'
+import ChooseColor from '../ChooseColor/ChooseColor';
 import Deck from '../Deck/Deck';
 import PlayerHands from '../PlayerHands/PlayerHands';
 
@@ -12,6 +13,7 @@ const GameBoard = ({players, onGameEnd}) => {
   const [playDirection, setPlayDirection] = useState(null);
   const [gameStart, setGameStart] = useState(null);
   const [currentPlayerIndex, setcurrentPlayerIndex] = useState(null);
+  const [wildPlayed, setWildPlayed] = useState(false);
   const [hands, setHands] = useState([]);
   const deck = useUnoDeck();
 
@@ -61,9 +63,16 @@ const GameBoard = ({players, onGameEnd}) => {
     return activePlayer - 1;
   }
 
+  const onChooseColor = (color) => {
+    deck.chooseWildColor(color);
+    setWildPlayed(false);
+    setcurrentPlayerIndex(advanceTurn(currentPlayerIndex));
+  }
+
   const evaluateCard = (cardValue) => {
     if (cardValue === 'Draw Four' || cardValue === 'Wild') {
-      console.log('wild!')
+      setWildPlayed(true);
+      return;
     }
     if (cardValue === 'R') {
       setPlayDirection('reverse');
@@ -115,11 +124,12 @@ const GameBoard = ({players, onGameEnd}) => {
       {!!playDirection && (
         <section className="gameBoard-wrapper">
           <Deck deck={deck} />
+          {wildPlayed && <ChooseColor onChooseColor={onChooseColor} />}
           <PlayerHands
             hands={hands}
             currentPlayerIndex={currentPlayerIndex}
             playCard={playCard}
-            onPass={() => evaluateCard('')}
+            onPass={() => setcurrentPlayerIndex(advanceTurn(currentPlayerIndex))}
           />
         </section>
       )}

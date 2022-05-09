@@ -1,9 +1,9 @@
 import { useRef } from 'react';
 
-const COLORS = [
-  'red',
-  'green',
+export const COLORS = [
   'blue',
+  'green',
+  'red',
   'yellow'
 ];
 
@@ -78,6 +78,11 @@ const useUnoDeck = () => {
     return true;
   }
 
+  const chooseWildColor = (color) => {
+    stack.current[stack.current.length - 1].color = color;
+    currentColor.current = color;
+  }
+
   const getRandomCard = () => {
     const cardsLeft = remainingCards.current.length;
     const randomNumber = getRandomNumber(0, cardsLeft - 1);
@@ -102,6 +107,7 @@ const useUnoDeck = () => {
     dealNewCards,
     flipCard,
     playCard,
+    chooseWildColor,
     currentCard: stack.current.length > 0 ? stack.current[stack.current.length - 1] : null
   }
 }
