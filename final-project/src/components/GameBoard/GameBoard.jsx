@@ -115,7 +115,12 @@ const GameBoard = ({players, onGameEnd}) => {
       {!!playDirection && (
         <section className="gameBoard-wrapper">
           <Deck deck={deck} />
-          <PlayerHands hands={hands} currentPlayerIndex={currentPlayerIndex} playCard={playCard} />
+          <PlayerHands
+            hands={hands}
+            currentPlayerIndex={currentPlayerIndex}
+            playCard={playCard}
+            onPass={() => evaluateCard('')}
+          />
         </section>
       )}
 

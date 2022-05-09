@@ -2,11 +2,14 @@ import Card from '../Card';
 
 import './styles.css';
 
-const PlayerHand = ({player, cards, isPlayersTurn, onPlay}) => (
+const PlayerHand = ({player, cards, isPlayersTurn, onPlay, onPass}) => (
   <li className='playerHand'>
     <p>{player.name}</p>
     {cards && (
       <ul className={`playerHand-cards ${isPlayersTurn ? 'playerHand-cards--active' : ''}`}>
+        <li className='playerHand-passButton'>
+          <button type="button" onClick={onPass}>Pass</button>
+        </li>
         {cards.map((card, idx) => (
           <li key={idx}>
             <Card card={card} />

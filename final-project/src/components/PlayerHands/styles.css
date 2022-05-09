@@ -33,6 +33,16 @@
   flex-direction: column;
 }
 
+.playerHand-cards .playerHand-passButton {
+  flex-basis: 100%;
+  margin-bottom: 8px;
+}
+
+.playerHand-passButton button {
+  align-self: center;
+  padding: 4px 24px;
+}
+
 .playerHand-cards button {
   border: 1px solid #333;
   border-radius: 7px;
