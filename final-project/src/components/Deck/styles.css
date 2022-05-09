@@ -1,0 +1,12 @@
+.deck {
+  border-radius: 11px;
+  background: #ccc;
+  justify-content: center;
+  display: inline-flex;
+  padding: 12px;
+  margin: 12px;
+}
+
+.deck > .card + .card {
+  margin-left: 8px;
+}

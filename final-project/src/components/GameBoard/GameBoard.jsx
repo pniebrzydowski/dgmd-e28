@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import useUnoDeck from '../../hooks/useUnoDeck'
-import Deck from '../Deck';
-import GameStatus from '../GameStatus';
-import PlayerHand from '../PlayerHand';
+import Deck from '../Deck/Deck';
+import PlayerHands from '../PlayerHands/PlayerHands';
 
 import './styles.css';
 
@@ -106,30 +105,18 @@ const GameBoard = ({players, onGameEnd}) => {
   }
   
   const gameOver = hands.some(hand => hand.cards !== null && hand.cards.length === 0);
-  const currentPlayer = (hands && currentPlayerIndex !== null) ? hands[currentPlayerIndex].player : null;
 
   return (
     <>
-      <button type="button" onClick={startNewGame} disabled={playDirection !== null}>Start New Game</button>
+      {!playDirection && (
+        <button type="button" onClick={startNewGame}>Start New Game</button>
+      )}
 
       {!!playDirection && (
-        <>
+        <section className="gameBoard-wrapper">
           <Deck deck={deck} />
-          <GameStatus currentPlayer={currentPlayer} />
-          <ul className="playerHands">
-            {hands.map(hand => (
-              <PlayerHand
-                key={`player-${hand.player.id}-hand`}
-                player={hand.player}
-                cards={hand.cards}
-                isPlayersTurn={currentPlayer.id === hand.player.id}
-                onPlay={(card) => {
-                  playCard(hand, card);
-                }}
-              />
-            ))}
-          </ul>
-        </>
+          <PlayerHands hands={hands} currentPlayerIndex={currentPlayerIndex} playCard={playCard} />
+        </section>
       )}
 
       {gameOver && (

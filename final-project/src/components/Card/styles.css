@@ -4,12 +4,16 @@
   justify-content: center;
   width: 100px;
   height: 150px;
-  border: 1px solid #333;
+  border: 7px solid #fff;
   border-radius: 11px;
   padding: 4px;
   color: #fff;
   font-size: 32px;
   font-weight: bold;
+}
+
+.card-back {
+  background: #000;
 }
 
 .card-black {
