@@ -116,7 +116,11 @@ const GameBoard = ({players, onGameEnd}) => {
       setWildPlayed(true);
       return;
     }
+
     if (cardValue === 'R') {
+      if (players.length === 2) {
+        actOnPlayer = advanceTurn(actOnPlayer);
+      }  
       setPlayDirection('reverse');
     }
 
