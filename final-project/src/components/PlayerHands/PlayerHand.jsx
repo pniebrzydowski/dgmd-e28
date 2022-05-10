@@ -2,7 +2,7 @@ import Card from '../Card';
 
 import './styles.css';
 
-const PlayerHand = ({player, cards, isPlayersTurn, onPlay, onPass}) => (
+const PlayerHand = ({player, cards, isPlayersTurn, onPlay, onPass, canPlay}) => (
   <li className='playerHand'>
     <p>{player.name}</p>
     {cards && (
@@ -14,7 +14,7 @@ const PlayerHand = ({player, cards, isPlayersTurn, onPlay, onPass}) => (
           <li key={idx}>
             <Card card={card} />
             {isPlayersTurn && (
-              <button type="button" onClick={() => onPlay(card)}>Play!</button>
+              <button type="button" onClick={() => onPlay(card)} disabled={!canPlay}>Play!</button>
             )}
           </li>
         ))}

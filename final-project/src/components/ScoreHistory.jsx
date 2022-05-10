@@ -18,7 +18,7 @@ const ScoreHistory = ({
         </thead>
         <tbody>
           {games.map(game => (
-            <tr>
+            <tr key={game.start}>
               <td>{game.start}</td>
               <td>{game.end}</td>
               {game.scores.map((score, idx) => (

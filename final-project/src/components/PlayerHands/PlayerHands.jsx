@@ -2,7 +2,7 @@ import PlayerHand from './PlayerHand';
 
 import './styles.css';
 
-const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass }) => {
+const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay }) => {
   const currentPlayer = (hands && currentPlayerIndex !== null) ? hands[currentPlayerIndex].player : null;
 
   return (
@@ -17,6 +17,7 @@ const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass }) => {
             playCard(hand, card);
           }}
           onPass={onPass}
+          canPlay={canPlay}
         />
       ))}
     </ul>

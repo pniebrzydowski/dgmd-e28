@@ -58,6 +58,21 @@ const GameBoard = ({players, onGameEnd}) => {
     return null;
   }
 
+  const addCardsToHand = (numberOfCards, hand) => {
+    setHands((prevState) => {
+      const h = [
+        ...prevState
+      ];
+      const playerIndex = h.findIndex(playerHand => playerHand.player.id === hand.player.id);
+      h[playerIndex].cards = [
+        ...hand.cards,
+        ...deck.dealNewCards(numberOfCards)
+      ];
+      console.log(h);
+      return h;
+    });
+  }
+
   const startNewGame = () => {
     const h = [...hands];
     h.forEach(hand => {
@@ -91,6 +106,12 @@ const GameBoard = ({players, onGameEnd}) => {
   }
 
   const evaluateCard = (cardValue) => {
+    let actOnPlayer = advanceTurn(currentPlayerIndex);
+
+    if (cardValue === 'Draw Four') {
+      addCardsToHand(4, hands[actOnPlayer]);
+    }
+
     if (cardValue === 'Draw Four' || cardValue === 'Wild') {
       setWildPlayed(true);
       return;
@@ -99,16 +120,11 @@ const GameBoard = ({players, onGameEnd}) => {
       setPlayDirection('reverse');
     }
 
-    let actOnPlayer = advanceTurn(currentPlayerIndex);
-
     if (cardValue === 'S') {
       actOnPlayer = advanceTurn(actOnPlayer);
     }
     if (cardValue === 'D') {
-      console.log(hands[actOnPlayer].player.name, ' draws 2');
-    }
-    if (cardValue === 'Draw Four') {
-      console.log(hands[actOnPlayer].player.name, ' draws 4');
+      addCardsToHand(2, hands[actOnPlayer]);
     }
     setcurrentPlayerIndex(actOnPlayer);
   }
@@ -121,6 +137,7 @@ const GameBoard = ({players, onGameEnd}) => {
     }
     const idx = hand.cards.findIndex(handCard => handCard.value === card.value && handCard.color === card.color);
     hand.cards.splice(idx, 1);
+
 
     setHands((prevState) => {
       const h = [
@@ -136,18 +153,7 @@ const GameBoard = ({players, onGameEnd}) => {
 
   const onPass = () => {
     const currentPlayerHand = hands[currentPlayerIndex];
-    setHands((prevState) => {
-      const h = [
-        ...prevState
-      ];
-      const playerIndex = h.findIndex(playerHand => playerHand.player.id === currentPlayerHand.player.id);
-      h[playerIndex].cards = [
-        ...currentPlayerHand.cards,
-        ...deck.dealNewCards(1)
-      ];
-      console.log(h);
-      return h;
-    });
+    addCardsToHand(1, currentPlayerHand);
     setcurrentPlayerIndex(advanceTurn(currentPlayerIndex));
   }
 
@@ -166,6 +172,7 @@ const GameBoard = ({players, onGameEnd}) => {
             currentPlayerIndex={currentPlayerIndex}
             playCard={playCard}
             onPass={onPass}
+            canPlay={!wildPlayed}
           />
         </section>
       )}
