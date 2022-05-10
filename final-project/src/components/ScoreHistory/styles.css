@@ -1,0 +1,25 @@
+.scoreHistory table {
+  text-align: left;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.scoreHistory tr {
+  border-bottom: 1px dotted #999;
+  font-size: 0.9rem;
+}
+
+.scoreHistory th,
+.scoreHistory td {
+  padding: 4px 8px;
+}
+
+.scoreHistory .totalScore {
+  border-bottom: 1px solid #333;
+  border-top: 1px solid #333;
+  font-style: italic;
+  font-size: 1rem;
+}
+.scoreHistory .totalScore td {
+  padding: 12px 8px;
+}

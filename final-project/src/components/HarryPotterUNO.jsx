@@ -30,7 +30,7 @@ const HarryPotterUNO = () => {
       <nav>
         <ul>
           <li><Link to="/">Game Board</Link></li>
-          <li><Link to="/stats">Player Stats</Link></li>
+          <li><Link to="/score">Scoresheet</Link></li>
           <li><Link to="/settings">Game Settings</Link></li>
         </ul>
       </nav>
@@ -41,7 +41,7 @@ const HarryPotterUNO = () => {
             <GameBoard players={players} onGameEnd={onGameEnd} />
           }/>
    
-          <Route path="/stats" element={
+          <Route path="/score" element={
             <ScoreHistory players={players} games={games} />
           }/>
           <Route path="/settings" element={
