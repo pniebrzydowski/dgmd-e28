@@ -5,25 +5,25 @@ const ScoreHistory = ({
   return (
     <section>
       <table>
-        <th>
+        <thead>
           <tr>
             <th>Game Start</th>
             <th>Game End</th>
             {players.map(player => (
-              <th>
+              <th key={player.id}>
                 {player.name}
               </th>
             ))}
           </tr>
-        </th>
+        </thead>
         <tbody>
           {games.map(game => (
             <tr>
               <td>{game.start}</td>
               <td>{game.end}</td>
-              {game.scores.map(score => (
-                <td>
-                  {score.score}
+              {game.scores.map((score, idx) => (
+                <td key={`${game.start}-${idx}`}>
+                  {score}
                 </td>
               ))}
             </tr>

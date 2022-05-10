@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import useUnoDeck from '../../hooks/useUnoDeck'
 import ChooseColor from '../ChooseColor/ChooseColor';
@@ -7,7 +7,19 @@ import PlayerHands from '../PlayerHands/PlayerHands';
 
 import './styles.css';
 
-const getHandScore = (hand) => hand.cards.reduce((prev, curr) => prev + curr, 0);
+const getHandScore = (hand) => hand.cards.reduce((prev, curr) => {
+  if (curr.value === 'D' || curr.value === 'S' || curr.value === 'R') {
+    return prev + 10;
+  }
+  if (curr.value === 'Wild') {
+    return prev + 40;
+  }
+  if (curr.value === 'Draw Four') {
+    return prev + 50;
+  }
+  return prev + curr.value;
+}
+  , 0);
 
 const GameBoard = ({players, onGameEnd}) => {
   const [playDirection, setPlayDirection] = useState(null);
@@ -25,18 +37,27 @@ const GameBoard = ({players, onGameEnd}) => {
     setHands(h);
   }, [players]);
 
-  if (!players.length) {
-    return null;
-  }
+  const gameOver = hands.some(hand => hand.cards !== null && hand.cards.length === 0);
 
-  const endGame = () => {
+  const endGame = useCallback(() => {
     setPlayDirection(null);
     onGameEnd({
       start: gameStart,
       end: new Date().valueOf(),
-      scores: hands
+      scores: hands.map(hand => getHandScore(hand))
     });
+  }, [gameStart, hands, onGameEnd]);
+
+  useEffect(() => {
+    if (gameOver) {
+      endGame();
+    }
+  }, [endGame, gameOver]);
+
+  if (!players.length) {
+    return null;
   }
+
   const startNewGame = () => {
     const h = [...hands];
     h.forEach(hand => {
@@ -112,8 +133,23 @@ const GameBoard = ({players, onGameEnd}) => {
     deck.playCard(card);
     evaluateCard(card.value);
   }
-  
-  const gameOver = hands.some(hand => hand.cards !== null && hand.cards.length === 0);
+
+  const onPass = () => {
+    const currentPlayerHand = hands[currentPlayerIndex];
+    setHands((prevState) => {
+      const h = [
+        ...prevState
+      ];
+      const playerIndex = h.findIndex(playerHand => playerHand.player.id === currentPlayerHand.player.id);
+      h[playerIndex].cards = [
+        ...currentPlayerHand.cards,
+        ...deck.dealNewCards(1)
+      ];
+      console.log(h);
+      return h;
+    });
+    setcurrentPlayerIndex(advanceTurn(currentPlayerIndex));
+  }
 
   return (
     <>
@@ -129,7 +165,7 @@ const GameBoard = ({players, onGameEnd}) => {
             hands={hands}
             currentPlayerIndex={currentPlayerIndex}
             playCard={playCard}
-            onPass={() => setcurrentPlayerIndex(advanceTurn(currentPlayerIndex))}
+            onPass={onPass}
           />
         </section>
       )}
@@ -137,7 +173,10 @@ const GameBoard = ({players, onGameEnd}) => {
       {gameOver && (
         <p>Final Scores:
           {hands.reduce((prev, curr) => (
-            prev.push(`${curr.player.name}: ${getHandScore(curr)}`)
+            [
+              ...prev,
+              `${curr.player.name}: ${getHandScore(curr)}`
+            ]
           ), []).join(', ')}
         </p>
       )}
