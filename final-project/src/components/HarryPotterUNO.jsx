@@ -71,7 +71,6 @@ const HarryPotterUNO = () => {
   }, [endGame, gameOver]);
 
 
-
   const addCardsToHand = (numberOfCards, hand) => {
     setHands((prevState) => {
       const h = [
@@ -192,21 +191,8 @@ const HarryPotterUNO = () => {
         <Routes>
           <Route path='/' element={
             <>
-              {!playDirection && (
-                <button type="button" onClick={startNewGame}>Start New Game</button>
-              )}
-              <GameBoard 
-                playDirection={playDirection}
-                deck={deck}
-                wildPlayed={wildPlayed}
-                onChooseColor={onChooseColor}
-                hands={hands}
-                currentPlayerIndex={currentPlayerIndex}
-                playCard={playCard}
-                onPass={onPass}
-              />
               {gameOver && (
-                <p>Final Scores:
+                <p>Final Score:{' '}
                   {hands.reduce((prev, curr) => (
                     [
                       ...prev,
@@ -214,6 +200,23 @@ const HarryPotterUNO = () => {
                     ]
                   ), []).join(', ')}
                 </p>
+              )}
+
+              {!playDirection && (
+                <button type="button" onClick={startNewGame}>Start New Game</button>
+              )}
+
+              {(!!playDirection || gameOver) && (
+                <GameBoard
+                  playDirection={playDirection}
+                  deck={deck}
+                  wildPlayed={wildPlayed}
+                  onChooseColor={onChooseColor}
+                  hands={hands}
+                  currentPlayerIndex={currentPlayerIndex}
+                  playCard={playCard}
+                  onPass={onPass}
+                />
               )}
             </>
           }/>

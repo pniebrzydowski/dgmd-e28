@@ -5,7 +5,6 @@ import PlayerHands from '../PlayerHands/PlayerHands';
 import './styles.css';
 
 const GameBoard = ({ 
-  playDirection,
   deck,
   wildPlayed,
   onChooseColor,
@@ -13,24 +12,18 @@ const GameBoard = ({
   currentPlayerIndex,
   playCard,
   onPass,
-}) => {
-  if (!playDirection) {
-    return null;
-  }
-
-  return (
-    <section className="gameBoard-wrapper">
-      <Deck deck={deck} />
-      {wildPlayed && <ChooseColor onChooseColor={onChooseColor} />}
-      <PlayerHands
-        hands={hands}
-        currentPlayerIndex={currentPlayerIndex}
-        playCard={playCard}
-        onPass={onPass}
-        canPlay={!wildPlayed}
-      />
-    </section>
-  );
-};
+}) => (
+  <section className="gameBoard-wrapper">
+    <Deck deck={deck} />
+    {wildPlayed && <ChooseColor onChooseColor={onChooseColor} />}
+    <PlayerHands
+      hands={hands}
+      currentPlayerIndex={currentPlayerIndex}
+      playCard={playCard}
+      onPass={onPass}
+      canPlay={!wildPlayed}
+    />
+  </section>
+);
 
 export default GameBoard;
