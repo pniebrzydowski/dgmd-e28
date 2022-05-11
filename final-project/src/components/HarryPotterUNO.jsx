@@ -22,18 +22,7 @@ const getHandScore = (hand) => hand.cards.reduce((prev, curr) => {
 
 const HarryPotterUNO = () => {
   const games = useRef(JSON.parse(localStorage.getItem('UNO-scores')) || []);
-  const [players] = useState([
-    {
-      id: 'harry-potter',
-      name: 'Harry Potter',
-      house: 'Gryffindor'
-    },
-    {
-      id: 'draco-malfoy',
-      name: 'Draco Malfoy',
-      house: 'Slytherin'
-    }
-  ]);
+  const [players, setPlayers] = useState([]);
   const [playDirection, setPlayDirection] = useState(null);
   const [gameStart, setGameStart] = useState(null);
   const [currentPlayerIndex, setcurrentPlayerIndex] = useState(null);
@@ -176,10 +165,6 @@ const HarryPotterUNO = () => {
     setcurrentPlayerIndex(advanceTurn(currentPlayerIndex));
   }
 
-  if (!players.length) {
-    return null;
-  }
-
   return (
     <BrowserRouter>
       <nav>
@@ -205,8 +190,12 @@ const HarryPotterUNO = () => {
                 </p>
               )}
 
-              {!playDirection && (
+              {!playDirection && players.length > 1 && (
                 <button type="button" onClick={startNewGame}>Start New Game</button>
+              )}
+
+              {players.length <= 1 && (
+                <p>You need at least 2 players to start a game. <Link to="/settings">Add more players</Link></p>
               )}
 
               {(!!playDirection || gameOver) && (
@@ -228,7 +217,7 @@ const HarryPotterUNO = () => {
             <ScoreHistory players={players} games={games.current} />
           }/>
           <Route path="/settings" element={
-            <GameSettings players={players} />
+            <GameSettings players={players} setPlayers={setPlayers} />
           } />
         </Routes>
       </div>
