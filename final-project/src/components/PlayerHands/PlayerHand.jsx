@@ -7,9 +7,11 @@ const PlayerHand = ({player, cards, isPlayersTurn, onPlay, onPass, canPlay}) => 
     <p>{player.name}</p>
     {cards && (
       <ul className={`playerHand-cards ${isPlayersTurn ? 'playerHand-cards--active' : ''}`}>
-        <li className='playerHand-passButton'>
-          <button type="button" onClick={onPass}>Pass</button>
-        </li>
+        {isPlayersTurn && (
+          <li className='playerHand-passButton'>
+            <button type="button" onClick={onPass}>Pass</button>
+          </li>
+        )}
         {cards.map((card, idx) => (
           <li key={idx}>
             <Card card={card} />

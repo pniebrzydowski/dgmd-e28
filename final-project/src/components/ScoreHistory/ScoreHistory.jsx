@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './styles.css';
 
 const formatDate = (dateValue) => {
@@ -9,10 +10,13 @@ const ScoreHistory = ({
   players = [],
   games = []
 }) => {
+  if (!games.length) {
+    return <p>No games have been played yet. <Link to="/">Play a game!</Link></p>
+  }
+
   const totals = [];
   games.forEach(game => {
     game.scores.forEach((score, idx) => {
-      console.log(totals[idx], score);
       if (!totals[idx]) {
         totals[idx] = 0;
       }

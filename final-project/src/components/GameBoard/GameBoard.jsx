@@ -68,7 +68,6 @@ const GameBoard = ({players, onGameEnd}) => {
         ...hand.cards,
         ...deck.dealNewCards(numberOfCards)
       ];
-      console.log(h);
       return h;
     });
   }
@@ -76,7 +75,7 @@ const GameBoard = ({players, onGameEnd}) => {
   const startNewGame = () => {
     const h = [...hands];
     h.forEach(hand => {
-      hand.cards = deck.dealNewCards(7)
+      hand.cards = deck.dealNewCards(1)
     });
     deck.flipCard();
     setHands(h);

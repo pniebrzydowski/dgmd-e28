@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import {Link, Route, BrowserRouter, Routes} from 'react-router-dom';
 
@@ -7,7 +7,7 @@ import GameSettings from './GameSettings';
 import ScoreHistory from './ScoreHistory';
 
 const HarryPotterUNO = () => {
-  const [games] = useState([]);
+  const games = useRef(JSON.parse(localStorage.getItem('UNO-scores')) || []);
   const [players] = useState([
     {
       id: 'harry-potter',
@@ -22,7 +22,12 @@ const HarryPotterUNO = () => {
   ]);
   
   const onGameEnd = (game) => {
-    games.push(game);
+    const updatedGames = [
+      ...games.current,
+      game
+    ];
+    games.current = updatedGames;
+    localStorage.setItem('UNO-scores', JSON.stringify(updatedGames));
   }
 
   return (
@@ -42,7 +47,7 @@ const HarryPotterUNO = () => {
           }/>
    
           <Route path="/score" element={
-            <ScoreHistory players={players} games={games} />
+            <ScoreHistory players={players} games={games.current} />
           }/>
           <Route path="/settings" element={
             <GameSettings players={players} />
