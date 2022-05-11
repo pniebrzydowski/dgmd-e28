@@ -63,7 +63,7 @@ const HarryPotterUNO = () => {
 
   const addCardsToHand = (numberOfCards, hand) => {
     setHands((prevState) => {
-      const playerIndex = prevState.findIndex(playerHand => playerHand.player.id === hand.player.id);
+      const playerIndex = prevState.findIndex(playerHand => playerHand.player.name === hand.player.name);
       const h = [
         ...prevState
       ];
@@ -152,7 +152,7 @@ const HarryPotterUNO = () => {
       const h = [
         ...prevState
       ];
-      const playerIndex = h.findIndex(playerHand => playerHand.player.id === hand.player.id);
+      const playerIndex = h.findIndex(playerHand => playerHand.player.name === hand.player.name);
       h[playerIndex].cards = hand.cards;
       return h;
     });
@@ -172,7 +172,7 @@ const HarryPotterUNO = () => {
         <ul>
           <li><Link to="/">Game Board</Link></li>
           <li><Link to="/score">Scoresheet</Link></li>
-          <li><Link to="/settings">Game Settings</Link></li>
+          <li><Link to="/players">Players</Link></li>
         </ul>
       </nav>
 
@@ -217,7 +217,7 @@ const HarryPotterUNO = () => {
           <Route path="/score" element={
             <ScoreHistory players={players} games={games.current} />
           }/>
-          <Route path="/settings" element={
+          <Route path="/players" element={
             <GameSettings players={players} setPlayers={setPlayers} />
           } />
         </Routes>

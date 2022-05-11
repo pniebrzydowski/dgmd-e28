@@ -32,7 +32,7 @@ const ScoreHistory = ({
             <th>Game Start</th>
             <th>Game End</th>
             {players.map(player => (
-              <th key={player.id}>
+              <th key={player.name}>
                 {player.name}
               </th>
             ))}

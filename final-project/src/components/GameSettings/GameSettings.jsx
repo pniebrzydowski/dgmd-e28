@@ -1,28 +1,25 @@
+import { useEffect, useState } from 'react';
 import './styles.css';
 
 const GameSettings = ({
   players,
   setPlayers
 }) => {
-  const playerOptions = [
-    {
-      id: 'harry-potter',
-      name: 'Harry Potter',
-      house: 'Gryffindor'
-    },
-    {
-      id: 'ron-weasley',
-      name: 'Ron Weasley',
-      house: 'Gryffindor'
-    },
-    {
-      id: 'draco-malfoy',
-      name: 'Draco Malfoy',
-      house: 'Slytherin'
+  const [characters, setCharacters] = useState([]);
+  useEffect(() => {
+    const getCharacters = async () => {
+      const response = await fetch('http://hp-api.herokuapp.com/api/characters', {
+        method: "GET",
+      }).then((res) => res.json());
+      setCharacters(response.filter(character => !!character.house).sort((a, b)=> {
+        return a.name > b.name ? 1 : -1;
+      }));
     }
-  ];
 
-  const remainingPlayers = playerOptions.filter(option => players.findIndex(p => p.id === option.id) === -1);
+    getCharacters();
+  }, []);
+
+  const remainingCharacters = characters.filter(option => players.findIndex(p => p.name === option.name) === -1);
 
   const selectPlayer = (player) => {
     const newPlayers = [
@@ -38,18 +35,20 @@ const GameSettings = ({
       <section className="gamePlayers">
         <h2>Current players:</h2>
         <ul>
-          {players.map(player => (
-            <li key={player.id}>{player.name} - {player.house}</li>
+          {players.map((player, idx) => (
+            <li key={player.name}>{player.name} - {player.house}{idx === 0 ? ' (You)' : ''}</li>
           ))}
         </ul>
       </section>
 
       <section className="addNewPlayer">
-        <h2>Add a new player:</h2>
-        {remainingPlayers.length > 0 ? (
+        <h2>
+          {players.length === 0 ? 'Select your character:' : 'Who will you play against?'}
+        </h2>
+        {remainingCharacters.length > 0 ? (
           <ul>
-            {remainingPlayers.map(player => (
-                <li key={player.id}>
+            {remainingCharacters.map(player => (
+                <li key={player.name}>
                   <button onClick={() => selectPlayer(player)}>Add</button>
                   {player.name} - {player.house}
                 </li>

@@ -9,10 +9,10 @@ const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay }) =
     <ul className="playerHands">
       {hands.map(hand => (
         <PlayerHand
-          key={`player-${hand.player.id}-hand`}
+          key={`${hand.player.name}'s hand`}
           player={hand.player}
           cards={hand.cards}
-          isPlayersTurn={currentPlayer.id === hand.player.id}
+          isPlayersTurn={currentPlayer.name === hand.player.name}
           onPlay={(card) => {
             playCard(hand, card);
           }}
