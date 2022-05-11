@@ -1,17 +1,8 @@
-import { useRef } from 'react';
+import { useRef } from "react";
 
-export const COLORS = [
-  'blue',
-  'green',
-  'red',
-  'yellow'
-];
+export const COLORS = ["blue", "green", "red", "yellow"];
 
-const SPECIALTY_CARDS = [
-  'D',
-  'S',
-  'R'
-];
+const SPECIALTY_CARDS = ["D", "S", "R"];
 
 class Card {
   constructor(value, color) {
@@ -26,23 +17,24 @@ const buildUnoDeck = () => {
   const deck = [];
   COLORS.forEach((color) => {
     deck.push(new Card(0, color));
-    for(let i = 1; i <= 9; i++) {
+    for (let i = 1; i <= 9; i++) {
       deck.push(new Card(i, color));
       deck.push(new Card(i, color));
     }
-    SPECIALTY_CARDS.forEach(card => {
+    SPECIALTY_CARDS.forEach((card) => {
       deck.push(new Card(card, color));
       deck.push(new Card(card, color));
     });
   });
-  for(let i = 1; i <= 4; i++) {
-    deck.push(new Card('Wild', 'black'));
-    deck.push(new Card('Draw Four', 'black'));
+  for (let i = 1; i <= 4; i++) {
+    deck.push(new Card("Wild", "black"));
+    deck.push(new Card("Draw Four", "black"));
   }
   return deck;
-}
+};
 
-const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const getRandomNumber = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
 
 const useUnoDeck = () => {
   const remainingCards = useRef(buildUnoDeck());
@@ -51,10 +43,10 @@ const useUnoDeck = () => {
 
   const validatePlayedCard = (card) => {
     const lastValue = stack.current[stack.current.length - 1].value;
-    if (card.color === 'black') {
+    if (card.color === "black") {
       return true;
     }
-    
+
     if (card.color === currentColor.current) {
       return true;
     }
@@ -64,24 +56,24 @@ const useUnoDeck = () => {
     return false;
   };
 
-  const addCardToStack = card => {
+  const addCardToStack = (card) => {
     stack.current.push(card);
     currentColor.current = card.color;
-  }
+  };
 
-  const playCard = card => {
+  const playCard = (card) => {
     const isValid = validatePlayedCard(card);
     if (!isValid) {
       return false;
     }
     addCardToStack(card);
     return true;
-  }
+  };
 
   const chooseWildColor = (color) => {
     stack.current[stack.current.length - 1].color = color;
     currentColor.current = color;
-  }
+  };
 
   const getRandomCard = () => {
     const cardsLeft = remainingCards.current.length;
@@ -89,15 +81,15 @@ const useUnoDeck = () => {
     const card = remainingCards.current[randomNumber];
     remainingCards.current.splice(randomNumber, 1);
     return card;
-  }
+  };
 
   const flipCard = () => {
     addCardToStack(getRandomCard());
-  }  
+  };
 
   const dealNewCards = (n) => {
     const hand = [];
-    for(let i=0; i<n; i++) {
+    for (let i = 0; i < n; i++) {
       hand.push(getRandomCard());
     }
     return hand;
@@ -108,8 +100,9 @@ const useUnoDeck = () => {
     flipCard,
     playCard,
     chooseWildColor,
-    currentCard: stack.current.length > 0 ? stack.current[stack.current.length - 1] : null
-  }
-}
+    currentCard:
+      stack.current.length > 0 ? stack.current[stack.current.length - 1] : null,
+  };
+};
 
 export default useUnoDeck;

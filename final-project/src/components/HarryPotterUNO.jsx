@@ -73,14 +73,17 @@ const HarryPotterUNO = () => {
 
   const addCardsToHand = (numberOfCards, hand) => {
     setHands((prevState) => {
+      const playerIndex = prevState.findIndex(playerHand => playerHand.player.id === hand.player.id);
       const h = [
         ...prevState
       ];
-      const playerIndex = h.findIndex(playerHand => playerHand.player.id === hand.player.id);
-      h[playerIndex].cards = [
-        ...hand.cards,
-        ...deck.dealNewCards(numberOfCards)
-      ];
+      h[playerIndex] = {
+        ...prevState[playerIndex],
+        cards: [
+          ...prevState[playerIndex].cards,
+          ...deck.dealNewCards(numberOfCards)
+        ]
+      };;
       return h;
     });
   }
