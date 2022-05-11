@@ -1,3 +1,5 @@
+import './styles.css';
+
 const GameSettings = ({
   players,
   setPlayers
@@ -20,15 +22,19 @@ const GameSettings = ({
     }
   ];
 
+  const remainingPlayers = playerOptions.filter(option => players.findIndex(p => p.id === option.id) === -1);
+
   const selectPlayer = (player) => {
-    setPlayers([
+    const newPlayers = [
       ...players,
       player
-    ])
+    ];
+    localStorage.setItem('UNO-players', JSON.stringify(newPlayers));
+    setPlayers(newPlayers);
   } 
   
   return (
-    <>
+    <section className='players'>
       <section className="gamePlayers">
         <h2>Current players:</h2>
         <ul>
@@ -40,21 +46,21 @@ const GameSettings = ({
 
       <section className="addNewPlayer">
         <h2>Add a new player:</h2>
-        <ul>
-          {playerOptions.map(player => {
-            if (players.findIndex(p => p.id === player.id) !== -1) {
-              return null;
-            }
-            return (
-              <li key={player.id}>
-                <button onClick={() => selectPlayer(player)}>Select</button>
-                {player.name} - {player.house}
-              </li>
-            );
-            })}
-        </ul>
+        {remainingPlayers.length > 0 ? (
+          <ul>
+            {remainingPlayers.map(player => (
+                <li key={player.id}>
+                  <button onClick={() => selectPlayer(player)}>Add</button>
+                  {player.name} - {player.house}
+                </li>
+              )
+            )}
+          </ul>
+        ) : (
+          <p>All available players are already taking part in the game.</p>
+        )}
       </section>
-    </>
+    </section>
   );
 };
 

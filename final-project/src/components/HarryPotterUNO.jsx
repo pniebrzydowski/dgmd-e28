@@ -22,7 +22,7 @@ const getHandScore = (hand) => hand.cards.reduce((prev, curr) => {
 
 const HarryPotterUNO = () => {
   const games = useRef(JSON.parse(localStorage.getItem('UNO-scores')) || []);
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('UNO-players')) || []);
   const [playDirection, setPlayDirection] = useState(null);
   const [gameStart, setGameStart] = useState(null);
   const [currentPlayerIndex, setcurrentPlayerIndex] = useState(null);
@@ -50,6 +50,7 @@ const HarryPotterUNO = () => {
         scores: hands.map(hand => getHandScore(hand))
       }
     ];
+    localStorage.setItem('UNO-scores', JSON.stringify(updatedGames));
     games.current = updatedGames;
   }, [gameStart, hands]);
   

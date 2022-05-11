@@ -1,0 +1,13 @@
+.players ul {
+  list-style: none;
+  padding: 0;
+}
+
+.players ul li {
+  padding: 4px 8px;
+}
+
+.players button {
+  cursor: pointer;
+  margin-right: 4px;
+}
