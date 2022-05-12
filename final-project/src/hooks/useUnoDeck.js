@@ -76,6 +76,9 @@ const useUnoDeck = () => {
   };
 
   const getRandomCard = () => {
+    if (remainingCards.current.length === 0) {
+      remainingCards.current = buildUnoDeck();
+    }
     const cardsLeft = remainingCards.current.length;
     const randomNumber = getRandomNumber(0, cardsLeft - 1);
     const card = remainingCards.current[randomNumber];

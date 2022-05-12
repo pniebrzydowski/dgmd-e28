@@ -13,7 +13,7 @@ const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay, cur
           key={`${hand.player.name}'s hand`}
           player={hand.player}
           cards={hand.cards}
-          isPlayersTurn={currentPlayer.name === hand.player.name}
+          isPlayersTurn={!gameOver && currentPlayer.name === hand.player.name}
           onPlay={(card) => {
             playCard(hand, card);
           }}
