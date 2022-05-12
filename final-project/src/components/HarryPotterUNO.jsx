@@ -9,22 +9,34 @@ import Navigation from './Navigation';
 import { getBestColor } from './PlayerHands/AIHand';
 import ScoreHistory from './ScoreHistory';
 
-const getHandScore = (hand) => hand.cards.reduce((prev, curr) => {
-  if (curr.value === 'S' || curr.value === 'R') {
-    return prev + 10;
+export const HOUSE_COLORS = {
+  Gryffindor: 'red',
+  Hufflepuff: 'yellow',
+  Ravenclaw: 'blue',
+  Slytherin: 'green'
+};
+
+const getHandScore = (hand, lastCard) => {
+  if (hand.cards.length === 0) {
+    return lastCard.color === HOUSE_COLORS[hand.player.house] ? -25 : 0;
   }
-  if (curr.value === 'D') {
-    return prev + 20;
-  }
-  
-  if (curr.value === 'Wild') {
-    return prev + 40;
-  }
-  if (curr.value === 'Draw Four') {
-    return prev + 50;
-  }
-  return prev + curr.value;
-}, 0);
+  return hand.cards.reduce((prev, curr) => {
+    if (curr.value === 'S' || curr.value === 'R') {
+      return prev + 10;
+    }
+    if (curr.value === 'D') {
+      return prev + 20;
+    }
+    
+    if (curr.value === 'Wild') {
+      return prev + 40;
+    }
+    if (curr.value === 'Draw Four') {
+      return prev + 50;
+    }
+    return prev + curr.value;
+  }, 0);
+}
 
 const HarryPotterUNO = () => {
   const [games, setGames] = useState(JSON.parse(localStorage.getItem('UNO-scores')) || []);
@@ -46,7 +58,7 @@ const HarryPotterUNO = () => {
 
   const gameOver = hands.some(hand => hand.cards !== null && hand.cards.length === 0);
 
-  const endGame = useCallback(() => {
+  const endGame = useCallback((lastCard) => {
     setPlayDirection(null);
     setGames(prevGames => {
       const updatedGames = [
@@ -54,7 +66,7 @@ const HarryPotterUNO = () => {
         {
           start: gameStart,
           end: new Date().valueOf(),
-          scores: [...hands].map(hand => getHandScore(hand))
+          scores: [...hands].map(hand => getHandScore(hand, lastCard))
         }
       ];
       localStorage.setItem('UNO-scores', JSON.stringify(updatedGames));
@@ -64,9 +76,9 @@ const HarryPotterUNO = () => {
   
   useEffect(() => {
     if (gameOver) {
-      endGame();
+      endGame(deck.currentCard);
     }
-  }, [endGame, gameOver]);
+  }, [deck.currentCard, endGame, gameOver]);
 
 
   const addCardsToHand = (numberOfCards, hand) => {
@@ -190,10 +202,12 @@ const HarryPotterUNO = () => {
             <>
               {gameOver && (
                 <p>Final Score:{' '}
-                  {[...hands].sort((a, b) => getHandScore(a) > getHandScore(b) ? 1 : -1).reduce((prev, curr) => (
+                  {[...hands]
+                    .sort((a, b) => getHandScore(a, deck.currentCard) > getHandScore(b, deck.currentCard) ? 1 : -1)
+                    .reduce((prev, curr) => (
                     [
                       ...prev,
-                      `${curr.player.name}: ${getHandScore(curr)}`
+                      `${curr.player.name}: ${getHandScore(curr, deck.currentCard)}`
                     ]
                   ), []).join(', ')}
                 </p>

@@ -1,4 +1,5 @@
 import Card from '../Card';
+import PlayerDisplay from './PlayerDisplay';
 
 import './styles.css';
 
@@ -13,7 +14,7 @@ const PlayerHand = ({player, showCards, cards, isPlayersTurn, onPlay, onPass, ca
 
   return (
     <li className={`playerHand ${isPlayersTurn ? 'playerHand--active' : ''}`}>
-      <p>{player.name} (you)</p>
+      <PlayerDisplay player={player} />
       {sortedCards && (
           <>
             {isPlayersTurn && (

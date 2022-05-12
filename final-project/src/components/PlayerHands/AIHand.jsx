@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { COLORS } from '../../hooks/useUnoDeck';
 import Card from '../Card';
+import PlayerDisplay from './PlayerDisplay';
 
 import './styles.css';
 
@@ -68,7 +69,8 @@ const AIHand = ({player, showCards, cards, isPlayersTurn, onPlay, onPass, canPla
 
   return (
     <li className={`playerHand ${isPlayersTurn ? 'playerHand--active' : ''}`}>
-      <p>{player.name}</p>
+      <PlayerDisplay player={player} isAI />
+
       {sortedCards && (
         showCards ? (
           <>

@@ -23,7 +23,7 @@
 }
 
 .myHand {
-  width: 75%;
+  width: 100%;
 }
 
 .playerHands .opponentHands {
@@ -32,7 +32,7 @@
   margin-left: 32px;
   position: relative;
   text-align: center;
-  width: 25%;
+  width: 360px;
 }
 
 .opponentHands > li + li {
@@ -80,4 +80,28 @@
 
 .playerHand-cards > li {
   margin: 4px;
+}
+
+.playerHand-display h4,
+.playerHand-display h5 {
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin: 0;
+}
+.playerHand-display h5 {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.playerHand-display--blue {
+  color: #00f;
+}
+.playerHand-display--green {
+  color: #090;
+}
+.playerHand-display--red {
+  color: #f00;
+}
+.playerHand-display--yellow {
+  color: rgb(235, 188, 0);
 }
