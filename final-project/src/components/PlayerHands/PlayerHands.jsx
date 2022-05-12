@@ -8,7 +8,7 @@ const sortCards = (a, b) => {
     if (a.value === b.value) {
       return 0;
     }
-    return a.value < b.value ? 1 : -1;
+    return String(a.value) < String(b.value) ? 1 : -1;
   }
   return a.color > b.color ? 1 : -1;
 };
