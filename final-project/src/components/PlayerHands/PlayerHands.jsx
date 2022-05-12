@@ -3,6 +3,16 @@ import PlayerHand from "./PlayerHand";
 
 import "./styles.css";
 
+const sortCards = (a, b) => {
+  if (a.color === b.color) {
+    if (a.value === b.value) {
+      return 0;
+    }
+    return a.value < b.value ? 1 : -1;
+  }
+  return a.color > b.color ? 1 : -1;
+};
+
 const PlayerHands = ({
   currentPlayerIndex,
   hands,
@@ -23,7 +33,7 @@ const PlayerHands = ({
       <ul className="myHand">
         <PlayerHand
           player={myHand.player}
-          cards={myHand.cards}
+          cards={myHand.cards.sort(sortCards)}
           isPlayersTurn={!gameOver && currentPlayer.name === myHand.player.name}
           onPlay={(card) => {
             playCard(myHand, card);
@@ -42,7 +52,7 @@ const PlayerHands = ({
             showCards={gameOver}
             key={`${hand.player.name}'s hand`}
             player={hand.player}
-            cards={hand.cards}
+            cards={hand.cards.sort(sortCards)}
             isPlayersTurn={!gameOver && currentPlayer.name === hand.player.name}
             onPlay={(card) => {
               playCard(hand, card);

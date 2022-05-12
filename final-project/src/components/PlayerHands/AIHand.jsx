@@ -59,19 +59,8 @@ const AIHand = ({
   isPlayersTurn,
   onPlay,
   onPass,
-  canPlay,
   currentCard,
 }) => {
-  const sortedCards = cards.sort((a, b) => {
-    if (a.color === b.color) {
-      if (a.value === b.value) {
-        return 0;
-      }
-      return a.value < b.value ? 1 : -1;
-    }
-    return a.color > b.color ? 1 : -1;
-  });
-
   useEffect(() => {
     if (showCards) {
       return;
@@ -81,12 +70,12 @@ const AIHand = ({
       return;
     }
 
-    const cardToPlay = getAIcard(sortedCards, currentCard);
+    const cardToPlay = getAIcard(cards, currentCard);
     setTimeout(cardToPlay ? () => onPlay(cardToPlay) : onPass, 1000);
   }, [
     showCards,
     isPlayersTurn,
-    sortedCards,
+    cards,
     currentCard.color,
     onPlay,
     onPass,
@@ -97,11 +86,11 @@ const AIHand = ({
     <li className={`playerHand ${isPlayersTurn ? "playerHand--active" : ""}`}>
       <PlayerDisplay player={player} isAI />
 
-      {sortedCards &&
+      {cards &&
         (showCards ? (
           <>
             <ul className="playerHand-cards">
-              {sortedCards.map((card, idx) => (
+              {cards.map((card, idx) => (
                 <li key={idx}>
                   <Card card={card} mini />
                 </li>
