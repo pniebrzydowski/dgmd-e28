@@ -55,8 +55,7 @@ const PlayerHand = ({player, showCards, cards, isPlayersTurn, onPlay, onPass, ca
     }
 
     const cardToPlay = getAIcard(sortedCards, currentCard);
-    console.log(cardToPlay);
-    setTimeout( cardToPlay ? () => onPlay(cardToPlay) : onPass, 500 );
+    setTimeout( cardToPlay ? () => onPlay(cardToPlay) : onPass, 1000 );
   }, [showCards, isPlayersTurn, sortedCards, currentCard.color, onPlay, onPass, currentCard]);
 
   return (
@@ -83,7 +82,7 @@ const PlayerHand = ({player, showCards, cards, isPlayersTurn, onPlay, onPass, ca
             </ul>
           </>
         ) : (
-          <p>Number of cards in hand: {cards.length}</p>
+          <p>Number of cards in hand: {cards.length === 1 ? 'UNO!' : cards.length}</p>
         )
       )}
     </li>

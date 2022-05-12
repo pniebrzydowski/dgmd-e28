@@ -1,13 +1,9 @@
 .playerHands {
-  list-style: none;
+  display: flex;
   margin: 0;
   padding: 0;
   position: relative;
   text-align: center;
-}
-
-.playerHands > li + li {
-  margin-top: 16px;
 }
 
 .playerHand {
@@ -15,9 +11,30 @@
   padding: 12px;
 }
 
+.playerHands ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .playerHand.playerHand--active {
   border: 3px solid #bdb;
   background: #dfd;
+}
+
+.myHand {
+  width: 75%;
+}
+
+.playerHands .opponentHands {
+  margin-left: 32px;
+  position: relative;
+  text-align: center;
+  width: 25%;
+}
+
+.opponentHands > li + li {
+  margin-top: 16px;
 }
 
 .playerHand-cards {

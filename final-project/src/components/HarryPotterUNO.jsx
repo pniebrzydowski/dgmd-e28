@@ -8,9 +8,13 @@ import GameSettings from './GameSettings';
 import ScoreHistory from './ScoreHistory';
 
 const getHandScore = (hand) => hand.cards.reduce((prev, curr) => {
-  if (curr.value === 'D' || curr.value === 'S' || curr.value === 'R') {
+  if (curr.value === 'S' || curr.value === 'R') {
     return prev + 10;
   }
+  if (curr.value === 'D') {
+    return prev + 20;
+  }
+  
   if (curr.value === 'Wild') {
     return prev + 40;
   }
