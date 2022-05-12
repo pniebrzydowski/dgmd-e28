@@ -10,6 +10,7 @@ class Card {
     this.color = color;
   }
 
+  // In the future, this could be updated to display images, components, etc.
   display = () => this.value;
 }
 
@@ -39,11 +40,13 @@ const getRandomNumber = (min, max) =>
 const useUnoDeck = () => {
   const remainingCards = useRef(buildUnoDeck());
   const stack = useRef([]);
+  // Track the color in a ref to be able to switch it when wilds are played
   const currentColor = useRef(null);
 
   const validatePlayedCard = (card) => {
     const lastValue = stack.current[stack.current.length - 1].value;
     if (card.color === "black") {
+      // Wilds may always be played
       return true;
     }
 
@@ -71,12 +74,14 @@ const useUnoDeck = () => {
   };
 
   const chooseWildColor = (color) => {
+    // Change the "active" color of the last wild played to enable play to continue
     stack.current[stack.current.length - 1].color = color;
     currentColor.current = color;
   };
 
   const getRandomCard = () => {
     if (remainingCards.current.length === 0) {
+      // If the deck is empty, "reshuffle"
       remainingCards.current = buildUnoDeck();
     }
     const cardsLeft = remainingCards.current.length;
@@ -89,6 +94,7 @@ const useUnoDeck = () => {
   const flipCard = () => {
     const startCard = getRandomCard();
     if (startCard.color === "black") {
+      // If a wild is flipped, select a random color to allow the game to start
       startCard.color = COLORS[getRandomNumber(0, 3)];
     }
     addCardToStack(startCard);

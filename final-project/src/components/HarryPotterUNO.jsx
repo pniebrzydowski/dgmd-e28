@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Link, Route, BrowserRouter, Routes } from "react-router-dom";
 import useUnoDeck from "../hooks/useUnoDeck";
+import FinalScore, { getHandScore } from "./FinalScore";
 
 import GameBoard from "./GameBoard";
 import GameSettings from "./GameSettings";
@@ -17,29 +18,8 @@ export const HOUSE_COLORS = {
   Slytherin: "green",
 };
 
-const getHandScore = (hand, lastCard) => {
-  if (hand.cards.length === 0) {
-    return lastCard.color === HOUSE_COLORS[hand.player.house] ? -25 : 0;
-  }
-  return hand.cards.reduce((prev, curr) => {
-    if (curr.value === "S" || curr.value === "R") {
-      return prev + 10;
-    }
-    if (curr.value === "D") {
-      return prev + 20;
-    }
-
-    if (curr.value === "Wild") {
-      return prev + 40;
-    }
-    if (curr.value === "Draw Four") {
-      return prev + 50;
-    }
-    return prev + curr.value;
-  }, 0);
-};
-
 const HarryPotterUNO = () => {
+  // On mount, fetch the score history & players from local storage
   const [games, setGames] = useState(
     JSON.parse(localStorage.getItem("UNO-scores")) || []
   );
@@ -61,10 +41,6 @@ const HarryPotterUNO = () => {
     setHands(h);
   }, [players]);
 
-  const gameOver = hands.some(
-    (hand) => hand.cards !== null && hand.cards.length === 0
-  );
-
   const endGame = useCallback(
     (lastCard) => {
       setPlayDirection(null);
@@ -83,6 +59,10 @@ const HarryPotterUNO = () => {
       });
     },
     [gameStart, hands]
+  );
+
+  const gameOver = hands.some(
+    (hand) => hand.cards !== null && hand.cards.length === 0
   );
 
   useEffect(() => {
@@ -162,6 +142,7 @@ const HarryPotterUNO = () => {
 
     if (cardValue === "Draw Four" || cardValue === "Wild") {
       if (currentPlayerIndex !== 0) {
+        // Handle wild color selection if played by a computer opponent
         setTimeout(() => {
           onChooseColor(getBestColor(hands[currentPlayerIndex]));
         }, 1000);
@@ -181,6 +162,7 @@ const HarryPotterUNO = () => {
   };
 
   const playCard = (hand, card) => {
+    // Check whether the card is playable (matching value/color or a wild)
     const isValid = deck.playCard(card);
     if (!isValid) {
       alert("Sorry, that card cannot be played at this time");
@@ -205,6 +187,9 @@ const HarryPotterUNO = () => {
   };
 
   const onClearPlayers = () => {
+    // When players are reset, the current game & scoresheet should also be reset
+    setPlayDirection(null);
+
     setGames([]);
     localStorage.removeItem("UNO-games");
   };
@@ -226,27 +211,7 @@ const HarryPotterUNO = () => {
             element={
               <>
                 {gameOver && (
-                  <p>
-                    Final Score:{" "}
-                    {[...hands]
-                      .sort((a, b) =>
-                        getHandScore(a, deck.currentCard) >
-                        getHandScore(b, deck.currentCard)
-                          ? 1
-                          : -1
-                      )
-                      .reduce(
-                        (prev, curr) => [
-                          ...prev,
-                          `${curr.player.name}: ${getHandScore(
-                            curr,
-                            deck.currentCard
-                          )}`,
-                        ],
-                        []
-                      )
-                      .join(", ")}
-                  </p>
+                  <FinalScore hands={hands} currentCard={deck.currentCard} />
                 )}
 
                 {!playDirection && players.length > 1 && (

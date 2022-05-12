@@ -26,7 +26,9 @@ const Rules = () => (
       </li>
       <li>
         All players are dealt 7 cards and a single card is dealt face up next to
-        the deck.
+        the deck. If an action card is dealt, the action is not performed. For
+        example, if a "Draw Two (D)" is flipped to start, the first player does
+        not draw any cards.
       </li>
       <li>
         The player (you) always plays first. Your opponents hands are controlled
