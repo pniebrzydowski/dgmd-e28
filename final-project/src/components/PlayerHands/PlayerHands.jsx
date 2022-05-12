@@ -2,13 +2,14 @@ import PlayerHand from './PlayerHand';
 
 import './styles.css';
 
-const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay }) => {
+const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay, currentCard, gameOver }) => {
   const currentPlayer = (hands && currentPlayerIndex !== null) ? hands[currentPlayerIndex].player : null;
 
   return (
     <ul className="playerHands">
-      {hands.map(hand => (
+      {hands.map((hand, idx) => (
         <PlayerHand
+          showCards={idx === 0 || gameOver}
           key={`${hand.player.name}'s hand`}
           player={hand.player}
           cards={hand.cards}
@@ -18,6 +19,7 @@ const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay }) =
           }}
           onPass={onPass}
           canPlay={canPlay}
+          currentCard={currentCard}
         />
       ))}
     </ul>

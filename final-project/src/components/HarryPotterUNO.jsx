@@ -81,7 +81,7 @@ const HarryPotterUNO = () => {
   const startNewGame = () => {
     const h = [...hands];
     h.forEach(hand => {
-      hand.cards = deck.dealNewCards(1)
+      hand.cards = deck.dealNewCards(7)
     });
     deck.flipCard();
     setHands(h);
@@ -209,6 +209,7 @@ const HarryPotterUNO = () => {
                   currentPlayerIndex={currentPlayerIndex}
                   playCard={playCard}
                   onPass={onPass}
+                  gameOver={gameOver}
                 />
               )}
             </>

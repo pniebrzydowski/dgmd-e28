@@ -12,6 +12,7 @@ const GameBoard = ({
   currentPlayerIndex,
   playCard,
   onPass,
+  gameOver
 }) => (
   <section className="gameBoard-wrapper">
     <Deck deck={deck} />
@@ -22,6 +23,8 @@ const GameBoard = ({
       playCard={playCard}
       onPass={onPass}
       canPlay={!wildPlayed}
+      currentCard={deck.currentCard}
+      gameOver={gameOver}
     />
   </section>
 );
