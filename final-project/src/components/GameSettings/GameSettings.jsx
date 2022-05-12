@@ -30,7 +30,7 @@ const GameSettings = ({
 
   useEffect(() => {
     const getCharacters = async () => {
-      const response = await fetch('http://hp-api.herokuapp.com/api/characters', {
+      const response = await fetch('https://hp-api.herokuapp.com/api/characters', {
         method: "GET",
       }).then((res) => res.json());
       const filteredCharacters = response.filter(character => !!character.house).sort((a, b)=> {
