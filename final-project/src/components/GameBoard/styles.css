@@ -1,3 +1,5 @@
 .gameBoard-wrapper {
   text-align: center;
+  background: #ccc;
+  padding: 8px;
 }

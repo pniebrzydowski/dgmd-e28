@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {Link, Route, BrowserRouter, Routes} from 'react-router-dom';
 import useUnoDeck from '../hooks/useUnoDeck';
@@ -26,7 +26,7 @@ const getHandScore = (hand) => hand.cards.reduce((prev, curr) => {
 }, 0);
 
 const HarryPotterUNO = () => {
-  const games = useRef(JSON.parse(localStorage.getItem('UNO-scores')) || []);
+  const [games, setGames] = useState(JSON.parse(localStorage.getItem('UNO-scores')) || []);
   const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('UNO-players')) || []);
   const [playDirection, setPlayDirection] = useState(null);
   const [gameStart, setGameStart] = useState(null);
@@ -47,16 +47,18 @@ const HarryPotterUNO = () => {
 
   const endGame = useCallback(() => {
     setPlayDirection(null);
-    const updatedGames = [
-      ...games.current,
-      {
-        start: gameStart,
-        end: new Date().valueOf(),
-        scores: hands.map(hand => getHandScore(hand))
-      }
-    ];
-    localStorage.setItem('UNO-scores', JSON.stringify(updatedGames));
-    games.current = updatedGames;
+    setGames(prevGames => {
+      const updatedGames = [
+        ...prevGames,
+        {
+          start: gameStart,
+          end: new Date().valueOf(),
+          scores: [...hands].map(hand => getHandScore(hand))
+        }
+      ];
+      localStorage.setItem('UNO-scores', JSON.stringify(updatedGames));
+      return updatedGames;
+    })
   }, [gameStart, hands]);
   
   useEffect(() => {
@@ -95,8 +97,8 @@ const HarryPotterUNO = () => {
     setPlayDirection('forward');
   }
 
-  const advanceTurn = (activePlayer, playDirection) => {
-    if (playDirection === 'forward') {
+  const advanceTurn = (activePlayer, direction) => {
+    if (direction === 'forward') {
       if (activePlayer === players.length - 1) {
         return 0;
       }
@@ -112,11 +114,19 @@ const HarryPotterUNO = () => {
   const onChooseColor = (color) => {
     deck.chooseWildColor(color);
     setWildPlayed(false);
-    setcurrentPlayerIndex(advanceTurn(currentPlayerIndex));
+    setcurrentPlayerIndex(advanceTurn(currentPlayerIndex, playDirection));
   }
 
   const evaluateCard = (cardValue) => {
-    let actOnPlayer = advanceTurn(currentPlayerIndex);
+    const direction = cardValue === 'R' ? playDirection === 'forward' ? 'reverse' : 'forward' : playDirection;
+    let actOnPlayer = advanceTurn(currentPlayerIndex, direction);
+
+    if (cardValue === 'R') {
+      setPlayDirection(direction);
+      if (players.length === 2) {
+        actOnPlayer = advanceTurn(actOnPlayer, direction);
+      }  
+    }
 
     if (cardValue === 'Draw Four') {
       addCardsToHand(4, hands[actOnPlayer]);
@@ -133,15 +143,8 @@ const HarryPotterUNO = () => {
       return;
     }
 
-    if (cardValue === 'R') {
-      if (players.length === 2) {
-        actOnPlayer = advanceTurn(actOnPlayer);
-      }  
-      setPlayDirection('reverse');
-    }
-
     if (cardValue === 'S') {
-      actOnPlayer = advanceTurn(actOnPlayer);
+      actOnPlayer = advanceTurn(actOnPlayer, direction);
     }
     if (cardValue === 'D') {
       addCardsToHand(2, hands[actOnPlayer]);
@@ -158,7 +161,6 @@ const HarryPotterUNO = () => {
     const idx = hand.cards.findIndex(handCard => handCard.value === card.value && handCard.color === card.color);
     hand.cards.splice(idx, 1);
 
-
     setHands((prevState) => {
       const h = [
         ...prevState
@@ -174,7 +176,7 @@ const HarryPotterUNO = () => {
   const onPass = () => {
     const currentPlayerHand = hands[currentPlayerIndex];
     addCardsToHand(1, currentPlayerHand);
-    setcurrentPlayerIndex(advanceTurn(currentPlayerIndex));
+    setcurrentPlayerIndex(advanceTurn(currentPlayerIndex, playDirection));
   }
 
   return (

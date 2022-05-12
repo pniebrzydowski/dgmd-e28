@@ -78,6 +78,6 @@
   background: #bbb;
 }
 
-.playerHand-cards > li + li {
-  margin-left: 8px;
+.playerHand-cards > li {
+  margin: 4px;
 }

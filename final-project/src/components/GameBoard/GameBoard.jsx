@@ -5,6 +5,7 @@ import PlayerHands from '../PlayerHands/PlayerHands';
 import './styles.css';
 
 const GameBoard = ({ 
+  playDirection,
   deck,
   wildPlayed,
   onChooseColor,
@@ -15,6 +16,13 @@ const GameBoard = ({
   gameOver
 }) => (
   <section className="gameBoard-wrapper">
+    {!!playDirection && (
+      <p>
+        {playDirection === 'reverse' && <>&larr;</>}
+        {' Play Direction '}
+        {playDirection === 'forward' && <>&rarr;</>}
+      </p>
+    )}
     <Deck deck={deck} />
     {wildPlayed && <ChooseColor onChooseColor={onChooseColor} />}
     <PlayerHands
