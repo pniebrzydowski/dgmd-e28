@@ -1,10 +1,8 @@
-import './App.css';
-import HarryPotterUNO from './components/HarryPotterUNO';
+import "./App.css";
+import HarryPotterUNO from "./components/HarryPotterUNO";
 
 function App() {
-  return (
-    <HarryPotterUNO />
-  );
+  return <HarryPotterUNO />;
 }
 
 export default App;

@@ -1,14 +1,20 @@
-import { COLORS } from '../../hooks/useUnoDeck';
+import { COLORS } from "../../hooks/useUnoDeck";
 
-import './styles.css';
+import "./styles.css";
 
 const ChooseColor = ({ onChooseColor }) => (
   <>
     <p>Choose a color: </p>
     <ul className="chooseColor">
-      {COLORS.map(color => (
+      {COLORS.map((color) => (
         <li key={color}>
-          <button type="button" className={`chooseColor-${color}`} onClick={() => onChooseColor(color)}>{color}</button>
+          <button
+            type="button"
+            className={`chooseColor-${color}`}
+            onClick={() => onChooseColor(color)}
+          >
+            {color}
+          </button>
         </li>
       ))}
     </ul>

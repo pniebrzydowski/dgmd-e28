@@ -1,10 +1,10 @@
-import ChooseColor from '../ChooseColor/ChooseColor';
-import Deck from '../Deck/Deck';
-import PlayerHands from '../PlayerHands/PlayerHands';
+import ChooseColor from "../ChooseColor/ChooseColor";
+import Deck from "../Deck/Deck";
+import PlayerHands from "../PlayerHands/PlayerHands";
 
-import './styles.css';
+import "./styles.css";
 
-const GameBoard = ({ 
+const GameBoard = ({
   playDirection,
   deck,
   wildPlayed,
@@ -13,14 +13,14 @@ const GameBoard = ({
   currentPlayerIndex,
   playCard,
   onPass,
-  gameOver
+  gameOver,
 }) => (
   <section className="gameBoard-wrapper">
     {!!playDirection && (
       <p>
-        {playDirection === 'reverse' && <>&larr;</>}
-        {' Play Direction '}
-        {playDirection === 'forward' && <>&rarr;</>}
+        {playDirection === "reverse" && <>&larr;</>}
+        {" Play Direction "}
+        {playDirection === "forward" && <>&rarr;</>}
       </p>
     )}
     <Deck deck={deck} />

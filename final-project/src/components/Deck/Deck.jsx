@@ -1,13 +1,11 @@
 import Card from "../Card";
 
-import './styles.css';
+import "./styles.css";
 
 const Deck = ({ deck }) => (
   <section className="deck">
     <Card card={null} />
-    {deck.currentCard && (
-      <Card card={deck.currentCard} />
-    )}
+    {deck.currentCard && <Card card={deck.currentCard} />}
   </section>
 );
 

@@ -1,1 +1,1 @@
-export { default } from './ChooseColor';
+export { default } from "./ChooseColor";

@@ -1,15 +1,26 @@
-import AIHand from './AIHand';
-import PlayerHand from './PlayerHand';
+import AIHand from "./AIHand";
+import PlayerHand from "./PlayerHand";
 
-import './styles.css';
+import "./styles.css";
 
-const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay, currentCard, gameOver }) => {
-  const currentPlayer = (hands && currentPlayerIndex !== null) ? hands[currentPlayerIndex].player : null;
+const PlayerHands = ({
+  currentPlayerIndex,
+  hands,
+  playCard,
+  onPass,
+  canPlay,
+  currentCard,
+  gameOver,
+}) => {
+  const currentPlayer =
+    hands && currentPlayerIndex !== null
+      ? hands[currentPlayerIndex].player
+      : null;
 
   const [myHand, ...opponentHands] = hands;
   return (
-    <section className='playerHands'>
-      <ul className='myHand'>
+    <section className="playerHands">
+      <ul className="myHand">
         <PlayerHand
           player={myHand.player}
           cards={myHand.cards}
@@ -23,7 +34,9 @@ const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay, cur
         />
       </ul>
       <ul className="opponentHands">
-        <li><h3>Opponents</h3></li>
+        <li>
+          <h3>Opponents</h3>
+        </li>
         {opponentHands.map((hand) => (
           <AIHand
             showCards={gameOver}
@@ -42,6 +55,6 @@ const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay, cur
       </ul>
     </section>
   );
-}
+};
 
 export default PlayerHands;
