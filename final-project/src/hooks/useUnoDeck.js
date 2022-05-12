@@ -87,7 +87,11 @@ const useUnoDeck = () => {
   };
 
   const flipCard = () => {
-    addCardToStack(getRandomCard());
+    const startCard = getRandomCard();
+    if (startCard.color === "black") {
+      startCard.color = COLORS[getRandomNumber(0, 3)];
+    }
+    addCardToStack(startCard);
   };
 
   const dealNewCards = (n) => {

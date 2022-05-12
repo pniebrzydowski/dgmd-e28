@@ -1,7 +1,17 @@
 import { useEffect } from 'react';
+import { COLORS } from '../../hooks/useUnoDeck';
 import Card from '../Card';
 
 import './styles.css';
+
+export const getBestColor = (hand) => {
+  const colorLengths = COLORS.map(color => ({
+    color,
+    length: hand.cards.filter(card => card.color === color).length
+  }));
+  const mostColor = Math.max.apply(Math, colorLengths.map((color) => color.length ));
+  return colorLengths.find(color => color.length === mostColor).color;
+}
 
 const getAIcard = (sortedCards, currentCard) => {
   /** A basic "AI" for opponents, who play according to the following logic:
@@ -10,9 +20,7 @@ const getAIcard = (sortedCards, currentCard) => {
    *  2. First card with a matching value
    *  3. Draw Four
    *  4. Regular Wild card
-   **/
-  console.log(sortedCards);
-  
+   **/  
   const sameColorCard = sortedCards.find(card => card.color === currentCard.color);
   if (sameColorCard) {
     return sameColorCard;
@@ -28,7 +36,7 @@ const getAIcard = (sortedCards, currentCard) => {
     return drawFour;
   }
 
-  const wild = sortedCards.find(card => card.value === 'Draw Four');
+  const wild = sortedCards.find(card => card.value === 'Wild');
   if (drawFour) {
     return wild;
   }

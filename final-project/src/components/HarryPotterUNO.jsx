@@ -5,6 +5,7 @@ import useUnoDeck from '../hooks/useUnoDeck';
 
 import GameBoard from './GameBoard';
 import GameSettings from './GameSettings';
+import { getBestColor } from './PlayerHands/PlayerHand';
 import ScoreHistory from './ScoreHistory';
 
 const getHandScore = (hand) => hand.cards.reduce((prev, curr) => {
@@ -123,6 +124,11 @@ const HarryPotterUNO = () => {
 
     if (cardValue === 'Draw Four' || cardValue === 'Wild') {
       setWildPlayed(true);
+      if (currentPlayerIndex !== 0) {
+        setTimeout(() => {
+          onChooseColor(getBestColor(hands[currentPlayerIndex]));
+        }, 1000);
+      }
       return;
     }
 
