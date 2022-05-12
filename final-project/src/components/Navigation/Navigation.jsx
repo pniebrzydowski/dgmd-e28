@@ -1,14 +1,14 @@
-import { Link } from "react-router-dom"
+import NavLink from "./NavLink";
 
-import './styles.css';
+import "./styles.css";
 
 const Navigation = () => (
   <nav className="mainNavigation">
     <ul>
-      <li><Link to="/">Game Board</Link></li>
-      <li><Link to="/score">Scoresheet</Link></li>
-      <li><Link to="/players">Players</Link></li>
-      <li><Link to="/rules">Rules</Link></li>
+      <NavLink path="/" title="Game Board" />
+      <NavLink path="/score" title="Scoresheet" />
+      <NavLink path="/players" title="Players" />
+      <NavLink path="/rules" title="Rules" />
     </ul>
   </nav>
 );

@@ -7,6 +7,7 @@
 }
 
 .playerHand {
+  border: 3px solid transparent;
   background: #eee;
   padding: 12px;
 }
