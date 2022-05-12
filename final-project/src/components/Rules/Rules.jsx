@@ -11,7 +11,7 @@ const Rules = () => (
       as well as at least one opponent. This can be done on the{" "}
       <Link to="/players">Players</Link> page. Characters available for choosing
       include characters from the Harry Potter series of books and movies. Only
-      characteres which are part of a Hogwarts house are available to choose, as
+      characters which are part of a Hogwarts house are available to choose, as
       this affects the scoring. For more details, see the "Scoring" section
       below.
     </p>
