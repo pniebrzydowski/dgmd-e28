@@ -26,7 +26,8 @@ const GameSettings = ({
   setPlayers
 }) => {
   const [characters, setCharacters] = useState([]);
-  const [houseFilter, setHouseFilter] = useState(null);
+  const [houseFilter, setHouseFilter] = useState("");
+
   useEffect(() => {
     const getCharacters = async () => {
       const response = await fetch('http://hp-api.herokuapp.com/api/characters', {
@@ -85,9 +86,9 @@ const GameSettings = ({
         </h2>
         <p>Filter by House: 
           <select onChange={(e) => setHouseFilter(e.target.value)} value={houseFilter}>
-            <option value={null}>Show All</option>
+            <option value="">Show All</option>
             {HOUSES.map(house => (
-              <option>{house}</option>
+              <option key={house}>{house}</option>
             ))}
           </select>
         </p>
