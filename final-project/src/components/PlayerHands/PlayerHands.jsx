@@ -1,3 +1,4 @@
+import AIHand from './AIHand';
 import PlayerHand from './PlayerHand';
 
 import './styles.css';
@@ -10,8 +11,6 @@ const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay, cur
     <section className='playerHands'>
       <ul className='myHand'>
         <PlayerHand
-          showCards={true}
-          key={`${myHand.player.name}'s hand`}
           player={myHand.player}
           cards={myHand.cards}
           isPlayersTurn={!gameOver && currentPlayer.name === myHand.player.name}
@@ -24,8 +23,9 @@ const PlayerHands = ({ currentPlayerIndex, hands, playCard, onPass, canPlay, cur
         />
       </ul>
       <ul className="opponentHands">
+        <li><h3>Opponents</h3></li>
         {opponentHands.map((hand) => (
-          <PlayerHand
+          <AIHand
             showCards={gameOver}
             key={`${hand.player.name}'s hand`}
             player={hand.player}

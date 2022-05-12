@@ -1,6 +1,6 @@
 import './styles.css';
 
-const Card = ({ card }) => {
+const Card = ({ card, mini = false }) => {
   if (!card) {
     return (
       <div className="card card-back">UNO</div>
@@ -8,7 +8,7 @@ const Card = ({ card }) => {
   }
 
   return (
-    <div className={`card card-${card.color}`}>{card.display()}</div>
+    <div className={`card card-${card.color}${mini ? ' card-mini' : ''}`}>{card.display()}</div>
   );
 };
 

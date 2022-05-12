@@ -27,6 +27,8 @@
 }
 
 .playerHands .opponentHands {
+  padding: 8px;
+  background: #ddd;
   margin-left: 32px;
   position: relative;
   text-align: center;
