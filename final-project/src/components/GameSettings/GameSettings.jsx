@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import './styles.css';
 
+const HOUSES = [
+  'Gryffindor',
+  'Hufflepuff',
+  'Ravenclaw',
+  'Slytherin'
+];
+
 const uniqBy = (arr, predicate) => {
   const cb = typeof predicate === 'function' ? predicate : (o) => o[predicate];
   
@@ -19,6 +26,7 @@ const GameSettings = ({
   setPlayers
 }) => {
   const [characters, setCharacters] = useState([]);
+  const [houseFilter, setHouseFilter] = useState(null);
   useEffect(() => {
     const getCharacters = async () => {
       const response = await fetch('http://hp-api.herokuapp.com/api/characters', {
@@ -52,6 +60,10 @@ const GameSettings = ({
       localStorage.removeItem('UNO-scores');
     }
   }
+
+  const characterSelectList = !houseFilter
+    ? remainingCharacters
+    : remainingCharacters.filter(character => character.house === houseFilter);
   
   return (
     <section className='players'>
@@ -71,9 +83,17 @@ const GameSettings = ({
         <h2>
           {players.length === 0 ? 'Select your character:' : 'Who will you play against?'}
         </h2>
-        {remainingCharacters.length > 0 ? (
+        <p>Filter by House: 
+          <select onChange={(e) => setHouseFilter(e.target.value)} value={houseFilter}>
+            <option value={null}>Show All</option>
+            {HOUSES.map(house => (
+              <option>{house}</option>
+            ))}
+          </select>
+        </p>
+        {characterSelectList.length > 0 ? (
           <ul>
-            {remainingCharacters.map(player => (
+            {characterSelectList.map(player => (
                 <li key={player.name}>
                   <button onClick={() => selectPlayer(player)}>Add</button>
                   {player.name} - {player.house}
