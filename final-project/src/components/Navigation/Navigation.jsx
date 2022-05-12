@@ -8,6 +8,7 @@ const Navigation = () => (
       <li><Link to="/">Game Board</Link></li>
       <li><Link to="/score">Scoresheet</Link></li>
       <li><Link to="/players">Players</Link></li>
+      <li><Link to="/rules">Rules</Link></li>
     </ul>
   </nav>
 );

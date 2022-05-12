@@ -1,19 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
-import {Link, Route, BrowserRouter, Routes} from 'react-router-dom';
-import useUnoDeck from '../hooks/useUnoDeck';
+import { Link, Route, BrowserRouter, Routes } from "react-router-dom";
+import useUnoDeck from "../hooks/useUnoDeck";
 
-import GameBoard from './GameBoard';
-import GameSettings from './GameSettings';
-import Navigation from './Navigation';
-import { getBestColor } from './PlayerHands/AIHand';
-import ScoreHistory from './ScoreHistory';
+import GameBoard from "./GameBoard";
+import GameSettings from "./GameSettings";
+import Navigation from "./Navigation";
+import { getBestColor } from "./PlayerHands/AIHand";
+import Rules from "./Rules";
+import ScoreHistory from "./ScoreHistory";
 
 export const HOUSE_COLORS = {
-  Gryffindor: 'red',
-  Hufflepuff: 'yellow',
-  Ravenclaw: 'blue',
-  Slytherin: 'green'
+  Gryffindor: "red",
+  Hufflepuff: "yellow",
+  Ravenclaw: "blue",
+  Slytherin: "green",
 };
 
 const getHandScore = (hand, lastCard) => {
@@ -21,26 +22,30 @@ const getHandScore = (hand, lastCard) => {
     return lastCard.color === HOUSE_COLORS[hand.player.house] ? -25 : 0;
   }
   return hand.cards.reduce((prev, curr) => {
-    if (curr.value === 'S' || curr.value === 'R') {
+    if (curr.value === "S" || curr.value === "R") {
       return prev + 10;
     }
-    if (curr.value === 'D') {
+    if (curr.value === "D") {
       return prev + 20;
     }
-    
-    if (curr.value === 'Wild') {
+
+    if (curr.value === "Wild") {
       return prev + 40;
     }
-    if (curr.value === 'Draw Four') {
+    if (curr.value === "Draw Four") {
       return prev + 50;
     }
     return prev + curr.value;
   }, 0);
-}
+};
 
 const HarryPotterUNO = () => {
-  const [games, setGames] = useState(JSON.parse(localStorage.getItem('UNO-scores')) || []);
-  const [players, setPlayers] = useState(JSON.parse(localStorage.getItem('UNO-players')) || []);
+  const [games, setGames] = useState(
+    JSON.parse(localStorage.getItem("UNO-scores")) || []
+  );
+  const [players, setPlayers] = useState(
+    JSON.parse(localStorage.getItem("UNO-players")) || []
+  );
   const [playDirection, setPlayDirection] = useState(null);
   const [gameStart, setGameStart] = useState(null);
   const [currentPlayerIndex, setcurrentPlayerIndex] = useState(null);
@@ -49,103 +54,113 @@ const HarryPotterUNO = () => {
   const deck = useUnoDeck();
 
   useEffect(() => {
-    const h = players.map(p => ({
+    const h = players.map((p) => ({
       player: p,
-      cards: null
+      cards: null,
     }));
     setHands(h);
   }, [players]);
 
-  const gameOver = hands.some(hand => hand.cards !== null && hand.cards.length === 0);
+  const gameOver = hands.some(
+    (hand) => hand.cards !== null && hand.cards.length === 0
+  );
 
-  const endGame = useCallback((lastCard) => {
-    setPlayDirection(null);
-    setGames(prevGames => {
-      const updatedGames = [
-        ...prevGames,
-        {
-          start: gameStart,
-          end: new Date().valueOf(),
-          scores: [...hands].map(hand => getHandScore(hand, lastCard))
-        }
-      ];
-      localStorage.setItem('UNO-scores', JSON.stringify(updatedGames));
-      return updatedGames;
-    })
-  }, [gameStart, hands]);
-  
+  const endGame = useCallback(
+    (lastCard) => {
+      setPlayDirection(null);
+
+      setGames((prevGames) => {
+        const updatedGames = [
+          ...prevGames,
+          {
+            start: gameStart,
+            end: new Date().valueOf(),
+            scores: [...hands].map((hand) => getHandScore(hand, lastCard)),
+          },
+        ];
+        localStorage.setItem("UNO-scores", JSON.stringify(updatedGames));
+        return updatedGames;
+      });
+    },
+    [gameStart, hands]
+  );
+
   useEffect(() => {
     if (gameOver) {
       endGame(deck.currentCard);
     }
   }, [deck.currentCard, endGame, gameOver]);
 
-
   const addCardsToHand = (numberOfCards, hand) => {
     setHands((prevState) => {
-      const playerIndex = prevState.findIndex(playerHand => playerHand.player.name === hand.player.name);
-      const h = [
-        ...prevState
-      ];
+      const playerIndex = prevState.findIndex(
+        (playerHand) => playerHand.player.name === hand.player.name
+      );
+      const h = [...prevState];
       h[playerIndex] = {
         ...prevState[playerIndex],
         cards: [
           ...prevState[playerIndex].cards,
-          ...deck.dealNewCards(numberOfCards)
-        ]
-      };;
+          ...deck.dealNewCards(numberOfCards),
+        ],
+      };
       return h;
     });
-  }
+  };
 
   const startNewGame = () => {
     const h = [...hands];
-    h.forEach(hand => {
-      hand.cards = deck.dealNewCards(7)
+    h.forEach((hand) => {
+      hand.cards = deck.dealNewCards(7);
     });
     deck.flipCard();
     setHands(h);
     setGameStart(new Date().valueOf());
     setcurrentPlayerIndex(0);
-    setPlayDirection('forward');
-  }
+    setPlayDirection("forward");
+  };
 
   const advanceTurn = (activePlayer, direction) => {
-    if (direction === 'forward') {
+    if (direction === "forward") {
       if (activePlayer === players.length - 1) {
         return 0;
       }
-      return activePlayer + 1; 
+      return activePlayer + 1;
     }
 
     if (activePlayer === 0) {
       return players.length - 1;
     }
     return activePlayer - 1;
-  }
+  };
 
   const onChooseColor = (color) => {
     deck.chooseWildColor(color);
     setWildPlayed(false);
     setcurrentPlayerIndex(advanceTurn(currentPlayerIndex, playDirection));
-  }
+  };
 
   const evaluateCard = (cardValue) => {
-    const direction = cardValue === 'R' ? playDirection === 'forward' ? 'reverse' : 'forward' : playDirection;
+    const direction =
+      cardValue === "R"
+        ? playDirection === "forward"
+          ? "reverse"
+          : "forward"
+        : playDirection;
     let actOnPlayer = advanceTurn(currentPlayerIndex, direction);
 
-    if (cardValue === 'R') {
+    if (cardValue === "R") {
       setPlayDirection(direction);
       if (players.length === 2) {
         actOnPlayer = advanceTurn(actOnPlayer, direction);
-      }  
+      }
     }
 
-    if (cardValue === 'Draw Four') {
+    if (cardValue === "Draw Four") {
       addCardsToHand(4, hands[actOnPlayer]);
     }
 
-    if (cardValue === 'Draw Four' || cardValue === 'Wild') {
+    if (cardValue === "Draw Four" || cardValue === "Wild") {
       if (currentPlayerIndex !== 0) {
         setTimeout(() => {
           onChooseColor(getBestColor(hands[currentPlayerIndex]));
@@ -156,41 +171,44 @@ const HarryPotterUNO = () => {
       return;
     }
 
-    if (cardValue === 'S') {
+    if (cardValue === "S") {
       actOnPlayer = advanceTurn(actOnPlayer, direction);
     }
-    if (cardValue === 'D') {
+    if (cardValue === "D") {
       addCardsToHand(2, hands[actOnPlayer]);
     }
     setcurrentPlayerIndex(actOnPlayer);
-  }
+  };
 
   const playCard = (hand, card) => {
     const isValid = deck.playCard(card);
     if (!isValid) {
-      alert('Sorry, that card cannot be played at this time');
+      alert("Sorry, that card cannot be played at this time");
       return;
     }
-    const idx = hand.cards.findIndex(handCard => handCard.value === card.value && handCard.color === card.color);
+    const idx = hand.cards.findIndex(
+      (handCard) =>
+        handCard.value === card.value && handCard.color === card.color
+    );
     hand.cards.splice(idx, 1);
 
     setHands((prevState) => {
-      const h = [
-        ...prevState
-      ];
-      const playerIndex = h.findIndex(playerHand => playerHand.player.name === hand.player.name);
+      const h = [...prevState];
+      const playerIndex = h.findIndex(
+        (playerHand) => playerHand.player.name === hand.player.name
+      );
       h[playerIndex].cards = hand.cards;
       return h;
     });
     deck.playCard(card);
     evaluateCard(card.value);
-  }
+  };
 
   const onPass = () => {
     const currentPlayerHand = hands[currentPlayerIndex];
     addCardsToHand(1, currentPlayerHand);
     setcurrentPlayerIndex(advanceTurn(currentPlayerIndex, playDirection));
-  }
+  };
 
   return (
     <BrowserRouter>
@@ -198,51 +216,77 @@ const HarryPotterUNO = () => {
 
       <div className="route-container">
         <Routes>
-          <Route path='/' element={
-            <>
-              {gameOver && (
-                <p>Final Score:{' '}
-                  {[...hands]
-                    .sort((a, b) => getHandScore(a, deck.currentCard) > getHandScore(b, deck.currentCard) ? 1 : -1)
-                    .reduce((prev, curr) => (
-                    [
-                      ...prev,
-                      `${curr.player.name}: ${getHandScore(curr, deck.currentCard)}`
-                    ]
-                  ), []).join(', ')}
-                </p>
-              )}
+          <Route
+            path="/"
+            element={
+              <>
+                {gameOver && (
+                  <p>
+                    Final Score:{" "}
+                    {[...hands]
+                      .sort((a, b) =>
+                        getHandScore(a, deck.currentCard) >
+                        getHandScore(b, deck.currentCard)
+                          ? 1
+                          : -1
+                      )
+                      .reduce(
+                        (prev, curr) => [
+                          ...prev,
+                          `${curr.player.name}: ${getHandScore(
+                            curr,
+                            deck.currentCard
+                          )}`,
+                        ],
+                        []
+                      )
+                      .join(", ")}
+                  </p>
+                )}
 
-              {!playDirection && players.length > 1 && (
-                <button type="button" className="newGameButton" onClick={startNewGame}>Start New Game</button>
-              )}
+                {!playDirection && players.length > 1 && (
+                  <button
+                    type="button"
+                    className="newGameButton"
+                    onClick={startNewGame}
+                  >
+                    Start New Game
+                  </button>
+                )}
 
-              {players.length <= 1 && (
-                <p>You need at least 2 players to start a game. <Link to="/players">Add more players</Link></p>
-              )}
+                {players.length <= 1 && (
+                  <p>
+                    You need at least 2 players to start a game.{" "}
+                    <Link to="/players">Add more players</Link>
+                  </p>
+                )}
 
-              {(!!playDirection || gameOver) && (
-                <GameBoard
-                  playDirection={playDirection}
-                  deck={deck}
-                  wildPlayed={wildPlayed}
-                  onChooseColor={onChooseColor}
-                  hands={hands}
-                  currentPlayerIndex={currentPlayerIndex}
-                  playCard={playCard}
-                  onPass={onPass}
-                  gameOver={gameOver}
-                />
-              )}
-            </>
-          }/>
-   
-          <Route path="/score" element={
-            <ScoreHistory players={players} games={games} />
-          }/>
-          <Route path="/players" element={
-            <GameSettings players={players} setPlayers={setPlayers} />
-          } />
+                {(!!playDirection || gameOver) && (
+                  <GameBoard
+                    playDirection={playDirection}
+                    deck={deck}
+                    wildPlayed={wildPlayed}
+                    onChooseColor={onChooseColor}
+                    hands={hands}
+                    currentPlayerIndex={currentPlayerIndex}
+                    playCard={playCard}
+                    onPass={onPass}
+                    gameOver={gameOver}
+                  />
+                )}
+              </>
+            }
+          />
+
+          <Route
+            path="/score"
+            element={<ScoreHistory players={players} games={games} />}
+          />
+          <Route
+            path="/players"
+            element={<GameSettings players={players} setPlayers={setPlayers} />}
+          />
+          <Route path="/rules" element={<Rules />} />
         </Routes>
       </div>
     </BrowserRouter>
