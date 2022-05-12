@@ -5,6 +5,7 @@ import useUnoDeck from '../hooks/useUnoDeck';
 
 import GameBoard from './GameBoard';
 import GameSettings from './GameSettings';
+import Navigation from './Navigation';
 import { getBestColor } from './PlayerHands/AIHand';
 import ScoreHistory from './ScoreHistory';
 
@@ -181,13 +182,7 @@ const HarryPotterUNO = () => {
 
   return (
     <BrowserRouter>
-      <nav>
-        <ul>
-          <li><Link to="/">Game Board</Link></li>
-          <li><Link to="/score">Scoresheet</Link></li>
-          <li><Link to="/players">Players</Link></li>
-        </ul>
-      </nav>
+      <Navigation />
 
       <div className="route-container">
         <Routes>
@@ -205,7 +200,7 @@ const HarryPotterUNO = () => {
               )}
 
               {!playDirection && players.length > 1 && (
-                <button type="button" onClick={startNewGame}>Start New Game</button>
+                <button type="button" className="newGameButton" onClick={startNewGame}>Start New Game</button>
               )}
 
               {players.length <= 1 && (
@@ -229,7 +224,7 @@ const HarryPotterUNO = () => {
           }/>
    
           <Route path="/score" element={
-            <ScoreHistory players={players} games={games.current} />
+            <ScoreHistory players={players} games={games} />
           }/>
           <Route path="/players" element={
             <GameSettings players={players} setPlayers={setPlayers} />

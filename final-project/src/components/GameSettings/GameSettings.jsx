@@ -71,12 +71,15 @@ const GameSettings = ({
       {players.length > 0 && (
         <section className="gamePlayers">
           <h2>Current players:</h2>
-          <button type="button" onClick={resetPlayers}>Clear All Players</button>
           <ul>
             {players.map((player, idx) => (
-              <li key={player.name}>{player.name} - {player.house}{idx === 0 ? ' (You)' : ''}</li>
+              <li key={player.name}>
+                {player.name}{idx === 0 ? ' (You)' : ''}<br />
+                <span class="character-house">{player.house}</span>
+              </li>
             ))}
           </ul>
+          <button type="button" className="button-clearPlayers" onClick={resetPlayers}>Clear All Players</button>
         </section>
       )}
 
@@ -93,14 +96,17 @@ const GameSettings = ({
           </select>
         </p>
         {characterSelectList.length > 0 ? (
-          <ul>
-            {characterSelectList.map(player => (
-                <li key={player.name}>
-                  <button onClick={() => selectPlayer(player)}>Add</button>
-                  {player.name} - {player.house}
-                </li>
-              )
-            )}
+          <ul class="characterSelect">
+            {characterSelectList.map(character => (
+              <li key={character.name}>
+                <button onClick={() => selectPlayer(character)}>
+                  <div>
+                    {character.name}<br />
+                    <span class="character-house">{character.house}</span>
+                  </div>
+                </button>
+              </li>
+            ))}
           </ul>
         ) : (
           <p>All available players are already taking part in the game.</p>

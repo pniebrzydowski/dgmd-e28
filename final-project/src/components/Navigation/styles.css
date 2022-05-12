@@ -1,0 +1,26 @@
+.mainNavigation {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: #900;
+}
+.mainNavigation ul {
+  list-style: none;
+  display: flex;
+  padding-left: 0;
+}
+
+.mainNavigation ul li a {
+  display: block;
+  padding: 12px 16px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.mainNavigation ul li a:hover {
+  background: #a00;
+}
+
+.mainNavigation ul li + li {
+  margin-left: 16px;
+}

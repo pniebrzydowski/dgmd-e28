@@ -1,18 +1,39 @@
-.players ul {
-  list-style: none;
-  padding: 0;
+.characterSelect {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.players ul li {
+.players li {
   padding: 4px 8px;
 }
 
-.players button {
+.characterSelect li {
+  padding: 0;
+  border: 1px solid #999;
+  margin: 4px;
+  flex-basis: 160px;
+}
+.characterSelect button {
   cursor: pointer;
-  margin-right: 4px;
+  background: none;
+  border: 0;
+  width: 100%;
+}
+.characterSelect button:hover {
+  background: #eee;
+}
+
+.character-house {
+  font-size: 0.9em;
+  color: #666;
 }
 
 .players select {
   margin-left: 8px;
   padding: 4px;
+}
+
+.button-clearPlayers {
+  margin-top: 16px;
 }
