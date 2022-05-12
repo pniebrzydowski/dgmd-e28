@@ -204,6 +204,11 @@ const HarryPotterUNO = () => {
     evaluateCard(card.value);
   };
 
+  const onClearPlayers = () => {
+    setGames([]);
+    localStorage.removeItem("UNO-games");
+  };
+
   const onPass = () => {
     const currentPlayerHand = hands[currentPlayerIndex];
     addCardsToHand(1, currentPlayerHand);
@@ -284,7 +289,13 @@ const HarryPotterUNO = () => {
           />
           <Route
             path="/players"
-            element={<GameSettings players={players} setPlayers={setPlayers} />}
+            element={
+              <GameSettings
+                players={players}
+                setPlayers={setPlayers}
+                onClear={onClearPlayers}
+              />
+            }
           />
           <Route path="/rules" element={<Rules />} />
         </Routes>

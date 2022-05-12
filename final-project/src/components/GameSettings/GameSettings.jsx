@@ -19,7 +19,7 @@ const uniqBy = (arr, predicate) => {
   ];
 };
 
-const GameSettings = ({ players, setPlayers }) => {
+const GameSettings = ({ players, setPlayers, onClear }) => {
   const [characters, setCharacters] = useState([]);
   const [houseFilter, setHouseFilter] = useState("");
 
@@ -61,7 +61,7 @@ const GameSettings = ({ players, setPlayers }) => {
     ) {
       setPlayers([]);
       localStorage.removeItem("UNO-players");
-      localStorage.removeItem("UNO-scores");
+      onClear();
     }
   };
 
