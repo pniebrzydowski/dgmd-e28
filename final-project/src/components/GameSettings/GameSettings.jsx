@@ -1,6 +1,19 @@
 import { useEffect, useState } from 'react';
 import './styles.css';
 
+const uniqBy = (arr, predicate) => {
+  const cb = typeof predicate === 'function' ? predicate : (o) => o[predicate];
+  
+  return [...arr.reduce((map, item) => {
+    const key = (item === null || item === undefined) ? 
+      item : cb(item);
+    
+    map.has(key) || map.set(key, item);
+    
+    return map;
+  }, new Map()).values()];
+};
+
 const GameSettings = ({
   players,
   setPlayers
@@ -11,9 +24,11 @@ const GameSettings = ({
       const response = await fetch('http://hp-api.herokuapp.com/api/characters', {
         method: "GET",
       }).then((res) => res.json());
-      setCharacters(response.filter(character => !!character.house).sort((a, b)=> {
+      const filteredCharacters = response.filter(character => !!character.house).sort((a, b)=> {
         return a.name > b.name ? 1 : -1;
-      }));
+      });
+      const uniqueCharacters = uniqBy(filteredCharacters, 'name');
+      setCharacters(uniqueCharacters);
     }
 
     getCharacters();
@@ -29,17 +44,28 @@ const GameSettings = ({
     localStorage.setItem('UNO-players', JSON.stringify(newPlayers));
     setPlayers(newPlayers);
   } 
+
+  const resetPlayers = () => {
+    if (window.confirm('Are you sure you want to clear the players? This will also clear the scoresheet and reset any ongoing game!')) {
+      setPlayers([]);
+      localStorage.removeItem('UNO-players');
+      localStorage.removeItem('UNO-scores');
+    }
+  }
   
   return (
     <section className='players'>
-      <section className="gamePlayers">
-        <h2>Current players:</h2>
-        <ul>
-          {players.map((player, idx) => (
-            <li key={player.name}>{player.name} - {player.house}{idx === 0 ? ' (You)' : ''}</li>
-          ))}
-        </ul>
-      </section>
+      {players.length > 0 && (
+        <section className="gamePlayers">
+          <h2>Current players:</h2>
+          <button type="button" onClick={resetPlayers}>Clear All Players</button>
+          <ul>
+            {players.map((player, idx) => (
+              <li key={player.name}>{player.name} - {player.house}{idx === 0 ? ' (You)' : ''}</li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="addNewPlayer">
         <h2>

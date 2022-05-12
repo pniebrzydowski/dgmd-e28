@@ -196,7 +196,7 @@ const HarryPotterUNO = () => {
               )}
 
               {players.length <= 1 && (
-                <p>You need at least 2 players to start a game. <Link to="/settings">Add more players</Link></p>
+                <p>You need at least 2 players to start a game. <Link to="/players">Add more players</Link></p>
               )}
 
               {(!!playDirection || gameOver) && (
